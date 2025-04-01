@@ -23,7 +23,7 @@ class ImageClass:
 		# Standard RGB to grayscale 
 		bitmap = 0.299 * r + 0.587 * g + 0.114 * b
 		bitmap = np.array(bitmap).reshape([ary.shape[0], ary.shape[1]])
-		bitmap = np.dot((bitmap > 128).astype(float),255)
+		bitmap = np.dot((bitmap < 128).astype(float),255)
 		im = Image.fromarray(bitmap.astype(np.uint8))
 		im.save(img.split('.')[0] + ".bmp")
 		return(im)
