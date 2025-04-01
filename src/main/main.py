@@ -1,4 +1,4 @@
-from main.functions import FunctionsClass
+from functions import FunctionsClass
 
 img_arr = ["src/image/1.jpg", "src/image/2.jpg", "src/image/3.jpg"]
 
