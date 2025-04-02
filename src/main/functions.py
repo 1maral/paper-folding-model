@@ -8,6 +8,15 @@ class ImageClass:
 	def __init__(self, img_arr):
 		self.img_arr = img_arr
 
+	# ========================================================================
+	# COMMENTS:
+	# I THINK WE SHOULD ALSO MAKE ANOTHER BITMAP OF 0'S AND 1'S IF WE WANT 
+	# TO IMPLEMENT IT THE WAY THE PAPER DOES? AND MAYBE MAKE IT RETURN AS A
+	# 2D ARRAY INSTEAD OF AN IMAGE OBJECT (MAKES IT EASIER FOR THE 
+	# PAPER_FOLDING FXNS I THINK). THEN, MAKE A SEPARATE FXN TO TRANSFORM A 
+	# BITMAP INTO AN IMAGE OBJECT?
+	# ========================================================================
+	
 	# Gives a single image and makes it a bitmap representation
 	@staticmethod
 	def img_bitmap(img):
