@@ -28,3 +28,19 @@ def initialize():
 
 # Initialize operation sets up the model
 initialize()
+
+# Create a paper for the paper folding task.
+paper = PaperFolding(img_stack, op_stack)
+
+# Fold, punch a hole, and unfold the paper.
+paper.fold()
+paper.punch()
+paper.unfold()
+
+def pick_solution(paper):
+    """Selects the image that most resembles the unfolded paper after 
+    folding and punching."""
+    pass
+
+# Choose the solution that resembles the unfolded paper the most.
+pick_solution(paper)

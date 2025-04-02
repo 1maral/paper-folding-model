@@ -47,13 +47,7 @@ class PaperFolding:
         # Keep unfolding the paper. 
         self.img_stack = new_img_stack
         self.unfold()
-
-    # This might be moved to `main.py` later.
-    def pick_solution(self):
-        """Selects the image that most resembles the unfolded paper after 
-        folding and punching."""
-        pass
-    
+        
     # ---------------
     # Helper Methods -- might move these to `functions.py`?
     # ---------------
