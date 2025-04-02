@@ -25,17 +25,22 @@ class ImageClass:
 
 		# Split the three channels
 		r,g,b = np.split(ary, 3, axis=2)
-		r=r.reshape(-1)
-		g=r.reshape(-1)
-		b=r.reshape(-1)
+		r = r.reshape(-1)
+		g = r.reshape(-1)
+		b = r.reshape(-1)
 
 		# Standard RGB to grayscale 
 		bitmap = 0.299 * r + 0.587 * g + 0.114 * b
 		bitmap = np.array(bitmap).reshape([ary.shape[0], ary.shape[1]])
+
+		# Convert to 1s and 0s
+		bitmap_binary = (bitmap < 128).astype(int)
+
 		bitmap = np.dot((bitmap < 128).astype(float),255)
 		im = Image.fromarray(bitmap.astype(np.uint8))
 		im.save(img.split('.')[0] + ".bmp")
-		return(im)
+
+		return(bitmap_binary)
 
 	# process all the images in the array through the local function
 	# returns the bitmap representation of the image and the information
