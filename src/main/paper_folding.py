@@ -23,11 +23,16 @@ class PaperFolding:
         """Simulates punching the paper after folding."""
         pass
 
+    # Returns the unfolded paper for now so implementing something in 
+    # `main.py` is easier.
     def unfold(self):
         """Simulates unfolding the paper.""" 
+        # Base case: Stop unfolding when only one layer remains.
+        if len(self.img_stack) == 1:
+            return self.img_stack.pop()
+        
         # Unfold one layer. Reconstruct the state of the paper by combining 
         # the images on the top and bottom of the image stack.
-
         new_img_stack = []
 
         while len(self.img_stack) != 0: 
