@@ -1,4 +1,5 @@
 from functions import ImageClass
+from paper_folding import PaperFolding
 
 # Fields: 
 
