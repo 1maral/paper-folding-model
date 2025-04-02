@@ -12,27 +12,22 @@ op_stack = []
 # Input: sequence of images that represent the state of the folded paper in each time-slice.
 # Diameter of punch: 27 px, Radius: 13.5 px
 # Size of paper: 320 x 320 px
-img_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg']
-
-# ====================
-# Comment:
-# Need a list possible solutions as Images. Then, convert those to bitmaps. ??
-# ====================
-possible_solutions = np.zeros((320, 320))
-solution_bitmaps = np.zeros((320, 320))
+input_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg']
+solutions_img = ['src/image/sol1.jpg', 'src/image/sol2.jpg', 'src/image/sol3.jpg', 'src/image/sol4.jpg', 'src/image/sol5.jpg']
 
 # An instance of the Image Class is initiated with the proper input
-img_processor = ImageClass(img_arr)
+img_processor = ImageClass()
 
 # 1D array of processed bitmap images in Image type for each state
-state_img = img_processor.img_process()
+input_bitmap = img_processor.img_process(input_arr)
+solutions_bitmap = img_processor.img_process(solutions_img)
 
 def initialize():
     blank_img = 'src/image/start.jpg'
     # Process the unfolded paper(blank) to bitmap representation
-    blank_img = img_processor.img_bitmap(blank_img)
+    blank_bitmap = img_processor.img_bitmap(blank_img)
     # Add the initial image to Image Stack
-    img_stack.append(blank_img)
+    img_stack.append(blank_bitmap)
 
 # Initialize operation sets up the model
 initialize()

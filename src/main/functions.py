@@ -4,17 +4,13 @@ import numpy as np
 class ImageClass:
 
 	# fields:
-	# array of images are given
-	def __init__(self, img_arr):
-		self.img_arr = img_arr
+	# No fields at the moment
+	def __init__(self):
+		pass
 
 	# ========================================================================
 	# COMMENTS:
-	# I THINK WE SHOULD ALSO MAKE ANOTHER BITMAP OF 0'S AND 1'S IF WE WANT 
-	# TO IMPLEMENT IT THE WAY THE PAPER DOES? AND MAYBE MAKE IT RETURN AS A
-	# 2D ARRAY INSTEAD OF AN IMAGE OBJECT (MAKES IT EASIER FOR THE 
-	# PAPER_FOLDING FXNS I THINK). THEN, MAKE A SEPARATE FXN TO TRANSFORM A 
-	# BITMAP INTO AN IMAGE OBJECT?
+	# SOLVED! Methods
 	# ========================================================================
 	
 	# Gives a single image and makes it a bitmap representation
@@ -44,8 +40,8 @@ class ImageClass:
 
 	# process all the images in the array through the local function
 	# returns the bitmap representation of the image and the information
-	def img_process(self):
+	def img_process(self, img_arr):
 		processed_img = []
-		for x in range (0, len(self.img_arr)):
-			processed_img.append(self.img_bitmap(self.img_arr[x]))
+		for x in range (0, len(img_arr)):
+			processed_img.append(self.img_bitmap(img_arr[x]))
 		return(processed_img)
