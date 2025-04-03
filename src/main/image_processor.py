@@ -1,18 +1,13 @@
 from PIL import Image
 import numpy as np
 
-class ImageClass:
+class ImageProcessor:
 
 	# fields:
 	# No fields at the moment
 	def __init__(self):
 		pass
 
-	# ========================================================================
-	# COMMENTS:
-	# SOLVED! Methods
-	# ========================================================================
-	
 	# Gives a single image and makes it a bitmap representation
 	@staticmethod
 	def img_bitmap(img):
@@ -45,3 +40,13 @@ class ImageClass:
 		for x in range (0, len(img_arr)):
 			processed_img.append(self.img_bitmap(img_arr[x]))
 		return(processed_img)
+	
+	# Note (delete later): Used in the `fold` and `unfold` methods.
+	def _reflect(self, image, fold_line):
+		pass
+
+	def _or_operation(self, image1, image2):
+        # A union-like operation is performed on the pixels of the two images.
+        # A pixel that is white in either image becomes white in the new one. 
+        # Otherwise, the pixel will be black in the new image.
+		return np.maximum(image1, image2)

@@ -1,5 +1,5 @@
-from functions import ImageClass
-from paper_folding import PaperFolding
+from image_processor import ImageProcessor
+from paper import Paper
 import numpy as np
 
 # Fields: 
@@ -15,8 +15,8 @@ op_stack = []
 input_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg']
 solutions_img = ['src/image/sol1.jpg', 'src/image/sol2.jpg', 'src/image/sol3.jpg', 'src/image/sol4.jpg', 'src/image/sol5.jpg']
 
-# An instance of the Image Class is initiated with the proper input
-img_processor = ImageClass()
+# An instance of the Image Processor is initiated with the proper input
+img_processor = ImageProcessor()
 
 # 1D array of processed bitmap images in Image type for each state
 input_bitmap = img_processor.img_process(input_arr)
@@ -33,7 +33,7 @@ def initialize():
 initialize()
 
 # Create a paper for the paper folding task.
-paper = PaperFolding(img_stack, op_stack)
+paper = Paper(img_stack, op_stack)
 
 # Fold, punch a hole, and unfold the paper.
 paper.fold()
@@ -59,11 +59,11 @@ def pick_solution(unfolded_paper, solutions):
                 if unfolded_paper[row][col] == curr_solution[row][col]:
                     matching_px += 1
 
-        # Calculate how similarity in percentage.
+        # Calculate the similarity in percentage.
         matching_percentage[i] = matching_px / (rows * cols) * 100
 
     # Return the most similar solution.
     return solutions[np.argmax(matching_percentage)]
 
 # Choose the solution that resembles the unfolded paper the most.
-prediction = pick_solution(unfolded_paper, solution_bitmaps)
+prediction = pick_solution(unfolded_paper, solutions_bitmap)

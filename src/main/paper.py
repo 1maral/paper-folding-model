@@ -1,11 +1,11 @@
 import numpy as np
 
-class PaperFolding:
+class Paper:
     # Not sure what the fields should be if we're planning on keeping the
     # image and operations stacks in `main.py`, so I'm just passing them into
     # the constructor for now although it doesn't make sense.
     def __init__(self, img_stack, op_stack):
-        """Initializes PaperFolding with an image and an operations stack."""
+        """Initializes Paper with an image and an operations stack."""
         # This represents the layer(s) of the paper.
         # The top of the stack is at the beginning of the list and the bottom 
         # is at the end of the list. 
@@ -54,17 +54,3 @@ class PaperFolding:
         # Keep unfolding the paper. 
         self.img_stack = new_img_stack
         self.unfold()
-
-    # ---------------
-    # Helper Methods -- might move these to `functions.py`?
-    # ---------------
-
-    # Note (delete later): Used in the `fold` and `unfold` methods.
-    def _reflect(self, image, fold_line):
-        pass
-
-    def _or_operation(self, image1, image2):
-        # A union-like operation is performed on the pixels of the two images.
-        # A pixel that is white in either image becomes white in the new one. 
-        # Otherwise, the pixel will be black in the new image.
-        return np.maximum(image1, image2)
