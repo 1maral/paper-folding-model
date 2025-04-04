@@ -48,11 +48,12 @@ class ImageProcessor:
 	@staticmethod
 	# Note (delete later): Used in the `fold` and `unfold` methods.
 	def reflect(image, fold_line):
-		pass
+		# Not implemented yet! (this is just for testing)
+		return image
 
 	@staticmethod
 	def or_operation(image1, image2):
-        # A union-like operation is performed on the pixels of the two images.
-        # A pixel that is white in either image becomes white in the new one. 
-        # Otherwise, the pixel will be black in the new image.
+    	# A union-like operation is performed on the pixels of the two images.
+    	# A pixel that is white in either image becomes white in the new one. 
+    	# Otherwise, the pixel will be black in the new image.
 		return np.maximum(image1, image2)

@@ -53,4 +53,4 @@ class Paper:
 
         # Keep unfolding the paper. 
         self.img_stack = new_img_stack
-        self.unfold()
+        return self.unfold()
