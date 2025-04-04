@@ -1,4 +1,5 @@
 import numpy as np
+from image_processor import ImageProcessor
 
 class Paper:
     # Not sure what the fields should be if we're planning on keeping the
@@ -23,8 +24,6 @@ class Paper:
         """Simulates punching the paper after folding."""
         pass
 
-    # Returns the unfolded paper for now so implementing something in 
-    # `main.py` is easier.
     def unfold(self):
         """Simulates unfolding the paper.""" 
         # Base case: Stop unfolding when only one layer remains.
@@ -42,11 +41,12 @@ class Paper:
 
             # Unfold the top layer of the paper, which is a flap. 
             fold_line = self.op_stack.pop()
-            unfolded_flap = self._reflect(folded_flap, fold_line)
+            unfolded_flap = ImageProcessor.reflect(folded_flap, fold_line)
 
             # Combine these two layers. (Reconstruct a state of the unfolded 
             # paper?)
-            unfolded_layer = self._or_operation(unfolded_flap, base_layer)
+            unfolded_layer = ImageProcessor.or_operation(unfolded_flap, 
+                                                         base_layer)
 
             # Add this partly unfolded paper to a new image stack.
             new_img_stack.append(unfolded_layer)

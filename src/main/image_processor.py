@@ -32,6 +32,10 @@ class ImageProcessor:
 		im.save(img.split('.')[0] + ".bmp")
 
 		return(bitmap_binary)
+	
+	# =============================================================
+	# Comment: would it make more sense to make `img_arr` a field?
+	# =============================================================
 
 	# process all the images in the array through the local function
 	# returns the bitmap representation of the image and the information
@@ -41,11 +45,13 @@ class ImageProcessor:
 			processed_img.append(self.img_bitmap(img_arr[x]))
 		return(processed_img)
 	
+	@staticmethod
 	# Note (delete later): Used in the `fold` and `unfold` methods.
-	def _reflect(self, image, fold_line):
+	def reflect(image, fold_line):
 		pass
 
-	def _or_operation(self, image1, image2):
+	@staticmethod
+	def or_operation(image1, image2):
         # A union-like operation is performed on the pixels of the two images.
         # A pixel that is white in either image becomes white in the new one. 
         # Otherwise, the pixel will be black in the new image.
