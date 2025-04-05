@@ -56,18 +56,50 @@ class ImageProcessor:
 		coord2_x = fold_line[1][0]
 		coord2_y = fold_line[1][1]
 
-		# Calculating fold line 
-		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
-		C = coord1_y - slope * coord1_x
-
-		reflection_line = []
-
 		# Check x-coords
 		max_x = coord1_x
 		min_x = coord2_x
 		if coord2_x > coord1_x:
 			max_x = coord2_x
 			min_x = coord1_x
+
+		# Check if fold line is horizontal or vertical
+		# Horizontal fold:
+		if (coord2_y - coord1_y) == 0:
+			for x in range(min_x, max_x):
+				row = image[x]
+				for y in range(len(row)):
+					if image[x][y] == 1:
+						reflected_x = coord1_x - (x -coord1_x)
+						reflected_y = y
+
+						# Swap pixels
+						temp = image[reflected_x][reflected_y]
+						image[reflected_x][reflected_y] = image[x][y]
+						image[x][y] = temp
+			return image
+		
+		# Vertical fold:
+		if (coord2_x - coord1_x) == 0:
+			for x in range(min_x, max_x):
+				row = image[x]
+				for y in range(len(row)):
+					if image[x][y] == 1:
+						reflected_x = x
+						reflected_y = coord1_y - (y -coord1_y)
+
+						# Swap pixels
+						temp = image[reflected_x][reflected_y]
+						image[reflected_x][reflected_y] = image[x][y]
+						image[x][y] = temp
+			return image
+
+		# Calculating fold line 
+		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
+		C = coord1_y - slope * coord1_x
+
+		reflection_line = []
+
 
 		# Find pixels on reflection line
 		for x in range(min_x, max_x):
@@ -83,7 +115,7 @@ class ImageProcessor:
 		for x in range(min_x, max_x):
 			row = image[x]
 			for y in range(coord1_y, coord2_y):
-				if image[x][y] == 0:
+				if image[x][y] == 1:
 					print("original x =" + str(x) + ",", "original y =" + str(y))
 					# d = (Ax + By + C) / A^2 + B^2
 					A = -1 * slope
@@ -98,7 +130,7 @@ class ImageProcessor:
 					image[x][y] = temp
 
 		# Special cases: when fold line is horizontal or vertical...
-		# ...
+		
 
 		return image
 
