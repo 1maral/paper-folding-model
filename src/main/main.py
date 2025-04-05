@@ -1,6 +1,7 @@
 from image_processor import ImageProcessor
 from paper import Paper
 import numpy as np
+from PIL import Image
 
 # Fields: 
 # ...
@@ -42,7 +43,7 @@ def pick_solution(unfolded_paper, solutions):
 # Image stack keeps track of images that represent the layers of folds
 img_stack = []
 # Operations stack keeps track of the operations that are performed on the images as folds occur
-op_stack = []
+op_stack = [] 
 
 # Input: sequence of images that represent the state of the folded paper in each time-slice.
 # Diameter of punch: 27 px, Radius: 13.5 px
@@ -78,19 +79,27 @@ paper.punch()
 # `test.py`)
 
 # Two layers: in3.jpg & in3.jpg on image stack
-in3_img = "src/image/in3.jpg"
-in3_bitmap = img_processor.img_bitmap(in3_img)
-img_stack.append(in3_bitmap)
-img_stack.append(in3_bitmap)
-op_stack.append([159, 159])
+# in3_img = "src/image/in3.jpg"
+# in3_bitmap = img_processor.img_bitmap(in3_img)
+# img_stack.append(in3_bitmap)
+# img_stack.append(in3_bitmap)
+# op_stack.append([159, 159], [0, 0])
 
-paper = Paper(img_stack, op_stack)
-unfolded_paper = paper.unfold()
+# paper = Paper(img_stack, op_stack)
+# unfolded_paper = paper.unfold()
 
-# result is in3.jpg
-print(unfolded_paper)
+# # result is in3.jpg
+# print(unfolded_paper)
+# # =============================================================================
+
+# # Choose the solution that resembles the unfolded paper the most.
+# prediction = pick_solution(unfolded_paper, solutions_bitmap)
+# print("Solution", prediction, "is the answer.")
+
 # =============================================================================
-
-# Choose the solution that resembles the unfolded paper the most.
-prediction = pick_solution(unfolded_paper, solutions_bitmap)
-print("Solution", prediction, "is the answer.")
+# Testing for reflect
+bitmap1 = img_processor.img_bitmap('src/image/w2.jpg')
+reflected = img_processor.reflect(bitmap1, [(160, 0), (160, 320)])
+reflected = np.dot((reflected > 0).astype(float),255)
+im = Image.fromarray(reflected.astype(np.uint8))
+im.save("src/image/reflect.bmp")
