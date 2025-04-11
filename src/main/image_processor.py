@@ -64,13 +64,19 @@ class ImageProcessor:
 			min_x = coord1_x
 
 		# Check if fold line is horizontal or vertical
-		# Horizontal fold:
+		# Note: x of 2D array refers to "y-axis" and yoord of 2D array refers to "x-axis" 
+		# but it's flipped (or normal) for the fold line coords...
+
+		# MAYBE SHOULD SWITCH X AND Y FOR CLARITY B/C X ACTUALLY REPRESENTS THE Y-COORD AND Y 
+		# ACTUALLY THE X-COORD ON A XY-PLANE B/C I GOT SO CONFUSED
+
+		# Horizontal fold: (vertical reflection)
 		if (coord2_y - coord1_y) == 0:
 			for x in range(min_x, max_x):
 				row = image[x]
 				for y in range(len(row)):
 					if image[x][y] == 1:
-						reflected_x = coord1_x - (x -coord1_x)
+						reflected_x = coord1_x - (x - coord1_x)
 						reflected_y = y
 
 						# Swap pixels
@@ -79,14 +85,14 @@ class ImageProcessor:
 						image[x][y] = temp
 			return image
 		
-		# Vertical fold:
+		# Vertical fold: (horizontal reflection)
 		if (coord2_x - coord1_x) == 0:
-			for x in range(min_x, max_x):
+			for x in range(len(image)):
 				row = image[x]
 				for y in range(len(row)):
 					if image[x][y] == 1:
 						reflected_x = x
-						reflected_y = coord1_y - (y -coord1_y)
+						reflected_y = coord1_y - (y - coord1_y)
 
 						# Swap pixels
 						temp = image[reflected_x][reflected_y]
@@ -94,17 +100,18 @@ class ImageProcessor:
 						image[x][y] = temp
 			return image
 
+
+		# For diagonal folds:
 		# Calculating fold line 
 		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
 		C = coord1_y - slope * coord1_x
 
 		reflection_line = []
 
-
 		# Find pixels on reflection line
 		for x in range(min_x, max_x):
 			row = image[x]
-			for y in range(coord1_y, coord2_y + 1):
+			for y in range(len(row)):
 				if (y == slope * x + C):
 					reflection_line.append((x, y))
 
@@ -114,7 +121,7 @@ class ImageProcessor:
 
 		for x in range(min_x, max_x):
 			row = image[x]
-			for y in range(coord1_y, coord2_y):
+			for y in range(len(row)):
 				if image[x][y] == 1:
 					print("original x =" + str(x) + ",", "original y =" + str(y))
 					# d = (Ax + By + C) / A^2 + B^2
@@ -128,9 +135,6 @@ class ImageProcessor:
 					temp = image[reflected_x][reflected_y]
 					image[reflected_x][reflected_y] = image[x][y]
 					image[x][y] = temp
-
-		# Special cases: when fold line is horizontal or vertical...
-		
 
 		return image
 
