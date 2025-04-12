@@ -111,7 +111,7 @@ class Paper:
         input_w_punch = inputs[-1]
 
         # punch for each img in stack
-        for i in len(stack):
+        for i in range(len(stack)):
             result_array = np.logical_and(input_w_punch, stack[i]).astype(int) # 1 if both pixel is 1
             stack[i] = result_array
         return stack
