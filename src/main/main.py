@@ -54,7 +54,6 @@ class Model:
 
     # =============================================================================
 
-    # WE SHOULD WRITE A MAIN FXN FOR ORGANIZATION!
 if __name__ == "__main__":
     # Input: sequence of images that represent the state of the folded paper in each time-slice.
     # Diameter of punch: 27 px, Radius: 13.5 px
@@ -69,16 +68,15 @@ if __name__ == "__main__":
 
     # =============================================================================
     # For testing:
-    solutions_img.append('src/image/in3.jpg')
+    # solutions_img.append('src/image/in3.jpg')
     # =============================================================================
     # Initialize operation sets up the model
     model.initialize()
 
-    # Fold, punch a hole, and unfold the paper.
+    Fold, punch a hole, and unfold the paper.
     folded = model.paper.fold(input_bitmap)
-    #paper.punch(input_bitmap, folded)
-
-    # unfolded_paper = paper.unfold()
+    model.paper.punch(input_bitmap, folded)
+    unfolded_paper = model.paper.unfold()
 
     # =============================================================================
     # Some testing code for `unfold`: (can't figure out the ModuleNotFoundError in 
@@ -98,9 +96,9 @@ if __name__ == "__main__":
     # print(unfolded_paper)
     # # =============================================================================
 
-    # # Choose the solution that resembles the unfolded paper the most.
-    # prediction = pick_solution(unfolded_paper, solutions_bitmap)
-    # print("Solution", prediction, "is the answer.")
+    # Choose the solution that resembles the unfolded paper the most.
+    prediction = model.pick_solution(unfolded_paper, solutions_bitmap)
+    print("Solution", prediction, "is the answer.")
 
     # =============================================================================
     # Testing for reflect
@@ -120,14 +118,14 @@ if __name__ == "__main__":
     im = Image.fromarray(reflected.astype(np.uint8))
     im.save("src/image/reflected.jpg")
 
-    # =============================================================================
-    # Testing for unfold
-    base = model.img_processor.img_bitmap('src/image/w1.jpg')
-    flap = model.img_processor.img_bitmap('src/image/w2.jpg')
-    # op = [(0, 160), (320, 160)] # Horizontal Fold (vertical Reflection)
-    paper1 = Paper([base, base, flap, flap], [[(0, 160), (320, 160)], [(0, 160), (320, 160)], [(0, 160), (320, 160)]])
-    unfolded_paper = paper1.unfold()
-    unfolded_paper = np.dot((unfolded_paper > 0).astype(float),255)
-    im = Image.fromarray(unfolded_paper.astype(np.uint8))
-    im.save("src/image/unfolded.bmp")
+    # # =============================================================================
+    # # Testing for unfold
+    # base = model.img_processor.img_bitmap('src/image/w1.jpg')
+    # flap = model.img_processor.img_bitmap('src/image/w2.jpg')
+    # # op = [(0, 160), (320, 160)] # Horizontal Fold (vertical Reflection)
+    # paper1 = Paper([base, base, flap, flap], [[(0, 160), (320, 160)], [(0, 160), (320, 160)], [(0, 160), (320, 160)]])
+    # unfolded_paper = paper1.unfold()
+    # unfolded_paper = np.dot((unfolded_paper > 0).astype(float),255)
+    # im = Image.fromarray(unfolded_paper.astype(np.uint8))
+    # im.save("src/image/unfolded.bmp")
     # UNFOLD SEEMS TO WORK SO FAR!
