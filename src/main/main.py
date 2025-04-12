@@ -101,17 +101,16 @@ paper.punch()
 bitmap1 = img_processor.img_bitmap('src/image/w2.jpg')
 
 # Horizontal Fold: (vertical reflection)
-reflected = img_processor.reflect(bitmap1, [(0, 160), (320, 160)])
+# reflected = img_processor.reflect(bitmap1, [(0, 160), (320, 160)])
 # Vertical Fold: (horizontal reflection)
-# reflected = img_processor.reflect(bitmap1, [(160, 0), (160, 320)])
+reflected = img_processor.reflect(bitmap1, [(160, 0), (160, 320)])
 # Diagonal Fold: 
-# reflected = img_processor.reflect(bitmap1, [(150, 320), (320, 150)])
+# reflected = img_processor.reflect(bitmap1, [(320, 160), (160, 320)])
+# reflected = img_processor.reflect(bitmap1, [(0, 0), (320, 320)])
+
 reflected = np.dot((reflected > 0).astype(float),255)
 im = Image.fromarray(reflected.astype(np.uint8))
 im.save("src/image/reflected.bmp")
-
-# REFLECT SEEMS TO WORK FOR HORIZONTAL AND VERTICAL FOLDS BUT NOT EXACTLY FOR
-# DIAGONAL FOLDS...
 
 # =============================================================================
 # Testing for unfold
@@ -123,5 +122,4 @@ unfolded_paper = paper1.unfold()
 unfolded_paper = np.dot((unfolded_paper > 0).astype(float),255)
 im = Image.fromarray(unfolded_paper.astype(np.uint8))
 im.save("src/image/unfolded.bmp")
-# UNFOLD SEEMS TO WORK! (IT DOES DEPEND ON THE REFLECTION ACROSS DIAGONAL 
-# FOLDS THO)
+# UNFOLD SEEMS TO WORK SO FAR!

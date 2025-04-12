@@ -48,8 +48,6 @@ class ImageProcessor:
 	@staticmethod
 	# Note (delete later): Used in the `fold` and `unfold` methods.
 	def reflect(image, fold_line):
-		im = Image.fromarray(image.astype(np.uint8))
-		im.save("src/image/test-1.jpg")
 
 		coord1_x = fold_line[0][0]
 		coord1_y = fold_line[0][1]
@@ -63,12 +61,12 @@ class ImageProcessor:
 			max_x = coord2_x
 			min_x = coord1_x
 
-		# Check if fold line is horizontal or vertical
-		# Note: x of 2D array refers to "y-axis" and yoord of 2D array refers to "x-axis" 
-		# but it's flipped (or normal) for the fold line coords...
+		# # # Check if fold line is horizontal or vertical
+		# # # Note: x of 2D array refers to "y-axis" and yoord of 2D array refers to "x-axis" 
+		# # # but it's flipped (or normal) for the fold line coords...
 
-		# MAYBE SHOULD SWITCH X AND Y FOR CLARITY B/C X ACTUALLY REPRESENTS THE Y-COORD AND Y 
-		# ACTUALLY THE X-COORD ON A XY-PLANE B/C I GOT SO CONFUSED
+		# # # MAYBE SHOULD SWITCH X AND Y FOR CLARITY B/C X ACTUALLY REPRESENTS THE Y-COORD AND Y 
+		# # # ACTUALLY THE X-COORD ON A XY-PLANE B/C I GOT SO CONFUSED
 
 		# Horizontal fold: (vertical reflection)
 		if (coord2_y - coord1_y) == 0:
@@ -100,8 +98,6 @@ class ImageProcessor:
 						image[x][y] = temp
 			return image
 
-
-		# For diagonal folds:
 		# Calculating fold line 
 		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
 		C = coord1_y - slope * coord1_x
@@ -111,25 +107,23 @@ class ImageProcessor:
 		# Find pixels on reflection line
 		for x in range(min_x, max_x):
 			row = image[x]
-			for y in range(len(row)):
+			for y in range(coord1_y, coord2_y + 1):
 				if (y == slope * x + C):
 					reflection_line.append((x, y))
 
 		print(reflection_line)
-		im = Image.fromarray(image.astype(np.uint8))
-		# im.save("src/image/test-1.jpg")
 
 		for x in range(min_x, max_x):
 			row = image[x]
-			for y in range(len(row)):
-				if image[x][y] == 1:
-					print("original x =" + str(x) + ",", "original y =" + str(y))
+			for y in range(coord1_y, coord2_y):
+				if image[x][y] == 0:
+					# print("original x =" + str(x) + ",", "original y =" + str(y))
 					# d = (Ax + By + C) / A^2 + B^2
 					A = -1 * slope
 					d = (A * x + y + -1 * C) / (A ** 2 + 1)
 					reflected_x = round(x - 2 * A * d) - 1
 					reflected_y = round(y - 2 * d) - 1
-					print("reflected_x =" + str(reflected_x) + ",", "reflected_y =" + str(reflected_y))
+					# print("reflected_x =" + str(reflected_x) + ",", "reflected_y =" + str(reflected_y))
 
 					# Swap pixels
 					temp = image[reflected_x][reflected_y]
