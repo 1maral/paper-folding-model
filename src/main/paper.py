@@ -100,9 +100,9 @@ class Paper:
                 
                 # find max and min coordinates
                 coord = self.compute_max_min_coord(flip_line)
-
+                self.op_stack.append(coord)
                 ## reflect
-                #stack.append(reflect)
+                #reflect()
 
         return stack
 
