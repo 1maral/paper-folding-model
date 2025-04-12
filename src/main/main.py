@@ -101,6 +101,7 @@ folded = paper.fold(input_bitmap)
 # Testing for reflect
 
 bitmap1 = img_processor.img_bitmap('src/image/w2.jpg')
+
 # Horizontal Fold: (vertical reflection)
 # reflected = img_processor.reflect(bitmap1, [(0, 160), (320, 160)])
 # Vertical Fold: (horizontal reflection)
