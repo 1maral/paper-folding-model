@@ -48,6 +48,10 @@ def pick_solution(unfolded_paper, solutions):
     # Return the most similar solution.
     return np.argmax(matching_percentage)
 
+# =============================================================================
+
+# WE SHOULD WRITE A MAIN FXN FOR ORGANIZATION!
+
 # Input: sequence of images that represent the state of the folded paper in each time-slice.
 # Diameter of punch: 27 px, Radius: 13.5 px
 # Size of paper: 320 x 320 px
@@ -95,10 +99,29 @@ paper.punch()
 # =============================================================================
 # Testing for reflect
 bitmap1 = img_processor.img_bitmap('src/image/w2.jpg')
-# Horizontal Fold:
-reflected = img_processor.reflect(bitmap1, [(320, 160), (160, 320)])
-# Vertical Fold:
+
+# Horizontal Fold: (vertical reflection)
+reflected = img_processor.reflect(bitmap1, [(0, 160), (320, 160)])
+# Vertical Fold: (horizontal reflection)
 # reflected = img_processor.reflect(bitmap1, [(160, 0), (160, 320)])
-reflected = np.dot((reflected < 1).astype(float),255)
+# Diagonal Fold: 
+# reflected = img_processor.reflect(bitmap1, [(150, 320), (320, 150)])
+reflected = np.dot((reflected > 0).astype(float),255)
 im = Image.fromarray(reflected.astype(np.uint8))
-im.save("src/image/reflect.bmp")
+im.save("src/image/reflected.bmp")
+
+# REFLECT SEEMS TO WORK FOR HORIZONTAL AND VERTICAL FOLDS BUT NOT EXACTLY FOR
+# DIAGONAL FOLDS...
+
+# =============================================================================
+# Testing for unfold
+base = img_processor.img_bitmap('src/image/w1.jpg')
+flap = img_processor.img_bitmap('src/image/w2.jpg')
+# op = [(0, 160), (320, 160)] # Horizontal Fold (vertical Reflection)
+paper1 = Paper([base, base, flap, flap], [[(0, 160), (320, 160)], [(0, 160), (320, 160)], [(0, 160), (320, 160)]])
+unfolded_paper = paper1.unfold()
+unfolded_paper = np.dot((unfolded_paper > 0).astype(float),255)
+im = Image.fromarray(unfolded_paper.astype(np.uint8))
+im.save("src/image/unfolded.bmp")
+# UNFOLD SEEMS TO WORK! (IT DOES DEPEND ON THE REFLECTION ACROSS DIAGONAL 
+# FOLDS THO)
