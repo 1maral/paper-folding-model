@@ -70,8 +70,9 @@ solutions_img.append('src/image/in3.jpg')
 initialize()
 
 # Fold, punch a hole, and unfold the paper.
-paper.fold()
-paper.punch()
+folded = paper.fold(input_bitmap)
+#paper.punch(input_bitmap, folded)
+
 # unfolded_paper = paper.unfold()
 
 # =============================================================================
@@ -100,6 +101,7 @@ paper.punch()
 # Testing for reflect
 # originally src/image/w2.jpg
 bitmap1 = img_processor.img_bitmap('src/image/w2.jpg')
+
 # Horizontal Fold: (vertical reflection)
 # reflected = img_processor.reflect(bitmap1, [(0, 160), (320, 160)])
 # Vertical Fold: (horizontal reflection)
