@@ -98,18 +98,20 @@ paper.punch()
 
 # =============================================================================
 # Testing for reflect
+# originally src/image/w2.jpg
 bitmap1 = img_processor.img_bitmap('src/image/w2.jpg')
 # Horizontal Fold: (vertical reflection)
 # reflected = img_processor.reflect(bitmap1, [(0, 160), (320, 160)])
 # Vertical Fold: (horizontal reflection)
-reflected = img_processor.reflect(bitmap1, [(160, 0), (160, 320)])
+# reflected = img_processor.reflect(bitmap1, [(160, 0), (160, 320)])
 # Diagonal Fold: 
-# reflected = img_processor.reflect(bitmap1, [(320, 160), (160, 320)])
+reflected = img_processor.reflect(bitmap1, [(320, 160), (160, 320)])
 # reflected = img_processor.reflect(bitmap1, [(0, 0), (320, 320)])
+# reflected = img_processor.reflect(bitmap1, [(320, 0), (0, 320)])
 
 reflected = np.dot((reflected > 0).astype(float),255)
 im = Image.fromarray(reflected.astype(np.uint8))
-im.save("src/image/reflected.bmp")
+im.save("src/image/reflected.jpg")
 
 # =============================================================================
 # Testing for unfold

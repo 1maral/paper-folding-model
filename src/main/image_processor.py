@@ -77,22 +77,24 @@ class ImageProcessor:
 						reflected_x = coord1_x - (x - coord1_x)
 						reflected_y = y
 
-						# Swap pixels
-						temp = image[reflected_x][reflected_y]
-						image[reflected_x][reflected_y] = image[x][y]
-						image[x][y] = temp
+						# Only swap pixels if not out of bound
+						if not (reflected_x >= len(image) or reflected_y >= len(image[0])):
+							temp = image[reflected_x][reflected_y]
+							image[reflected_x][reflected_y] = image[x][y]
+							image[x][y] = temp
 			return image
 		
 		# Vertical fold: (horizontal reflection)
 		if (coord2_x - coord1_x) == 0:
-			for x in range(len(image)):
-				row = image[x]
-				for y in range(len(row)):
-					if image[x][y] == 1:
-						reflected_x = x
-						reflected_y = coord1_y - (y - coord1_y)
+			for x in range(coord1_y, coord2_y):
+				# row = image[x]
+				for y in range(0, coord1_x): # left side of vertical fold
+					# if image[x][y] == 1:
+					reflected_x = x
+					reflected_y = coord1_x + (coord1_x - y) - 1
 
-						# Swap pixels
+					# Only swap pixels if not out of bound
+					if not (reflected_x >= len(image) or reflected_y >= len(image[0])):
 						temp = image[reflected_x][reflected_y]
 						image[reflected_x][reflected_y] = image[x][y]
 						image[x][y] = temp
@@ -102,34 +104,39 @@ class ImageProcessor:
 		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
 		C = coord1_y - slope * coord1_x
 
-		reflection_line = []
-
+		# reflection_line = []
 		# Find pixels on reflection line
-		for x in range(min_x, max_x):
-			row = image[x]
-			for y in range(coord1_y, coord2_y + 1):
-				if (y == slope * x + C):
-					reflection_line.append((x, y))
+		# for x in range(min_x, max_x):
+		# 	reflection_line.append(slope * x + C - 1)
 
-		print(reflection_line)
+		# print(reflection_line)
 
 		for x in range(min_x, max_x):
-			row = image[x]
+			# row = image[x]
 			for y in range(coord1_y, coord2_y):
-				if image[x][y] == 0:
+				# if image[x][y] == 0:
+				# if x < reflection_line[x - min_x]:
+				# if x == 160:
 					# print("original x =" + str(x) + ",", "original y =" + str(y))
-					# d = (Ax + By + C) / A^2 + B^2
-					A = -1 * slope
-					d = (A * x + y + -1 * C) / (A ** 2 + 1)
-					reflected_x = round(x - 2 * A * d) - 1
-					reflected_y = round(y - 2 * d) - 1
-					# print("reflected_x =" + str(reflected_x) + ",", "reflected_y =" + str(reflected_y))
+				# d = (Ax + By + C) / A^2 + B^2
+				A = -1 * slope
+				d = (A * x + y + -1 * C) / (A ** 2 + 1)
 
-					# Swap pixels
-					temp = image[reflected_x][reflected_y]
-					image[reflected_x][reflected_y] = image[x][y]
-					image[x][y] = temp
+				if d >= 0:
+					reflected_x = round(x - 2 * A * d) 
+					reflected_y = round(y - 2 * d) 
+					# if x == 160:
+					# 	print("reflected_x =" + str(reflected_x) + ",", "reflected_y =" + str(reflected_y))
 
+					# Only swap pixels if not out of bound
+					if reflected_x < len(image) and reflected_y < len(image[0]):
+					# if x == 160 and y == 280:
+					# 	print("Original val", image[x][y], "Reflected coords:", reflected_x, ",", reflected_y)
+						temp = image[reflected_x][reflected_y]
+						image[reflected_x][reflected_y] = image[x][y]
+						image[x][y] = temp
+					# if x == 160 and y == 280:
+					# 	print("New val", image[x][y])
 		return image
 
 	@staticmethod
