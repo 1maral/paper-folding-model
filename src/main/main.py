@@ -15,8 +15,12 @@ class Model:
         # An instance of the Image Processor is initiated
         self.img_processor = ImageProcessor()
         
+        self.initialize()
+
         # Create a paper for the paper folding task.
         self.paper = Paper(self.img_stack, self.op_stack)
+        # maybe this should be: self.paper = Paper([], []) -- no image and op 
+        # stacks for the model; leave that in Paper?
 
     # =============================================================================
     # Functions:
@@ -50,7 +54,7 @@ class Model:
             matching_percentage[i] = matching_px / (rows * cols) * 100
 
         # Return the most similar solution.
-        return np.argmax(matching_percentage)
+        return np.argmax(matching_percentage) + 1 # to return the actual solution number, not the index!
 
     # =============================================================================
 
@@ -58,8 +62,11 @@ if __name__ == "__main__":
     # Input: sequence of images that represent the state of the folded paper in each time-slice.
     # Diameter of punch: 27 px, Radius: 13.5 px
     # Size of paper: 320 x 320 px
-    input_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg']
+    # input_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg']
     solutions_img = ['src/image/sol1.jpg', 'src/image/sol2.jpg', 'src/image/sol3.jpg', 'src/image/sol4.jpg', 'src/image/sol5.jpg']
+
+    #------------------------------------------------------------------------------
+    input_arr = ['src/image/2in1.jpg', 'src/image/2in2.jpg', 'src/image/2in3.jpg', 'src/image/2in4.jpg', 'src/image/2in5.jpg']
     
     model = Model()
     # 1D array of processed bitmap images in Image type for each state
@@ -70,15 +77,24 @@ if __name__ == "__main__":
     # For testing:
     # solutions_img.append('src/image/in3.jpg')
     # =============================================================================
-    # Initialize operation sets up the model
-    model.initialize()
+    # Initialize operation sets up the model -- do this in constructor?
+    # model.initialize()
 
     # Fold, punch a hole, and unfold the paper.
     folded = model.paper.fold(input_bitmap)
-    model.paper.punch(input_bitmap, folded)
+    model.paper.punch(input_bitmap)
     unfolded_paper = model.paper.unfold()
 
     # =============================================================================
+
+    unfolded_paper = np.dot((unfolded_paper > 0).astype(float),255)
+    im = Image.fromarray(unfolded_paper.astype(np.uint8))
+    im.save("src/image/testing/unfolded.bmp")
+    # im.show()
+
+    # =============================================================================
+    # IGNORE THIS SECTION? JUST USE THE LAST SECTION FOR TESTING UNFOLD!
+    
     # Some testing code for `unfold`: (can't figure out the ModuleNotFoundError in 
     # `test.py`)
 
@@ -103,29 +119,47 @@ if __name__ == "__main__":
     # =============================================================================
     # Testing for reflect
     # originally src/image/w2.jpg
-    # bitmap1 = model.img_processor.img_bitmap('src/image/w2.jpg')
+    # bitmap1 = ImageProcessor.img_bitmap1("src/image/testing/flap-fig-3.bmp")
+    # bitmap1 = ImageProcessor.img_bitmap1("src/image/2in1.bmp")
+    # bitmap1 = ImageProcessor.img_bitmap("src/image/2in1.jpg")
+
+    # reflected = np.dot((bitmap1 > 0).astype(float),255)
+    # im = Image.fromarray(reflected.astype(np.uint8))
+    # im.save("src/image/testing/flap-fig-3.jpg")
+    # im.show()
 
     # Horizontal Fold: (vertical reflection)
-    # reflected = self.img_processor.reflect(bitmap1, [(0, 160), (320, 160)])
+    # reflected = ImageProcessor.reflect(bitmap1, [(0, 160), (320, 160)])
+    # reflected = ImageProcessor.reflect(bitmap1, [(0, 220), (320, 220)])
     # Vertical Fold: (horizontal reflection)
-    # reflected = self.img_processor.reflect(bitmap1, [(160, 0), (160, 320)])
+    # reflected = ImageProcessor.reflect(bitmap1, [(160, 0), (160, 320)])
+    # reflected = ImageProcessor.reflect(bitmap1, [(40, 0), (40, 320)])
+    # reflected = ImageProcessor.reflect(bitmap1, [(240, 0), (240, 320)])
     # Diagonal Fold: 
-    # reflected = model.img_processor.reflect(bitmap1, [(320, 160), (160, 320)])
-    # reflected = self.img_processor.reflect(bitmap1, [(0, 0), (320, 320)])
-    # reflected = self.img_processor.reflect(bitmap1, [(320, 0), (0, 320)])
+    # reflected = ImageProcessor.reflect(bitmap1, [(320, 160), (160, 320)])
+    # reflected = ImageProcessor.reflect(bitmap1, [(0, 0), (320, 320)])
+    # reflected = ImageProcessor.reflect(bitmap1, [(320, 0), (0, 320)])
 
     # reflected = np.dot((reflected > 0).astype(float),255)
     # im = Image.fromarray(reflected.astype(np.uint8))
     # im.save("src/image/reflected.jpg")
+    # im.show()
 
     # # =============================================================================
-    # # Testing for unfold
-    # base = model.img_processor.img_bitmap('src/image/w1.jpg')
-    # flap = model.img_processor.img_bitmap('src/image/w2.jpg')
-    # # op = [(0, 160), (320, 160)] # Horizontal Fold (vertical Reflection)
-    # paper1 = Paper([base, base, flap, flap], [[(0, 160), (320, 160)], [(0, 160), (320, 160)], [(0, 160), (320, 160)]])
+    # Testing for unfold
+    # model1 = Model()
+    # base1 = model1.img_processor.img_bitmap('src/image/w1.jpg')
+    # base2 = model1.img_processor.img_bitmap('src/image/w1.jpg')
+    # flap1 = model1.img_processor.img_bitmap('src/image/w2.jpg')
+    # flap2 = model1.img_processor.img_bitmap('src/image/w2.jpg')
+    # op = [(0, 160), (320, 160)] # Horizontal Fold (vertical Reflection)
+    # paper1 = Paper([base1, base2, flap1, flap2], [[(0, 160), (320, 160)], [(320, 160), (160, 320)], [(320, 160), (160, 320)]])
     # unfolded_paper = paper1.unfold()
     # unfolded_paper = np.dot((unfolded_paper > 0).astype(float),255)
     # im = Image.fromarray(unfolded_paper.astype(np.uint8))
     # im.save("src/image/unfolded.bmp")
-    # UNFOLD SEEMS TO WORK SO FAR!
+    # im.show()
+
+    # prediction = model.pick_solution(unfolded_paper, solutions_bitmap)
+    # print("Solution", prediction, "is the answer.")
+    # UNFOLD WORKS! It's just finnicky b/c of `reflect`

@@ -45,6 +45,32 @@ class ImageProcessor:
 			processed_img.append(self.img_bitmap(img_arr[x]))
 		return(processed_img)
 	
+	# To convert from bmp to bitmap (from Claude)
+	@staticmethod
+	def img_bitmap1(img):
+		"""Converts image to binary bitmap representation.
+		Preserves white (255) as 1 and black (0) as 0.
+		"""
+		try:
+			# Read image
+			image = Image.open(img)
+			
+			# Convert to grayscale if RGB
+			if image.mode == 'RGB':
+				image = image.convert('L')
+			
+			# Convert to numpy array
+			ary = np.array(image)
+			
+			# Normalize to binary (0 and 1)
+			# White (255) becomes 1, Black (0) becomes 0
+			return (ary > 128).astype(int)
+			
+		except Exception as e:
+			print(f"Error processing image {img}: {e}")
+			return None
+
+	
 	@staticmethod
 	# Note (delete later): Used in the `fold` and `unfold` methods.
 	def reflect(image, fold_line):
@@ -54,6 +80,21 @@ class ImageProcessor:
 		coord2_x = fold_line[1][0]
 		coord2_y = fold_line[1][1]
 
+		# Correct coords of fold_line for horizontal & vertical folds 
+		if coord2_y - coord1_y == 1: # horizontal fold line
+			coord1_y += 1 # arbitrary increment to get the coords on the same row
+		if coord2_x - coord1_x == 1: # vertical fold line
+			coord1_x += 1 # arbitrary increment to get the coords on the same col
+		# Adjust if coord is near end bound b/c end bound is exclusive 
+		if coord1_x == len(image[0]) - 1:
+			coord1_x += 1
+		if coord2_x == len(image[0]) - 1:
+			coord2_x += 1
+		if coord1_y == len(image) - 1:
+			coord1_y += 1
+		if coord2_y == len(image) - 1:
+			coord2_y += 1
+			
 		# Check x-coords
 		max_x = coord1_x
 		min_x = coord2_x
@@ -70,34 +111,66 @@ class ImageProcessor:
 
 		# Horizontal fold: (vertical reflection)
 		if (coord2_y - coord1_y) == 0:
-			for x in range(min_x, max_x):
+			# Determine which half above or below fold line is bigger.
+			img_height = len(image)
+			if img_height - coord1_y > coord1_y - 0:
+				begin = coord1_y
+				end = img_height
+			else: 
+				begin = 0
+				end = coord1_y
+
+			for x in range(begin, end): # the bigger half (up or down)
 				row = image[x]
 				for y in range(len(row)):
-					if image[x][y] == 1:
-						reflected_x = coord1_x - (x - coord1_x)
-						reflected_y = y
+					if x < coord1_y: # px is above fold line
+						reflected_x = (coord1_y - x) + coord1_y
+					else: # px is below fold line
+						reflected_x = coord1_y - (x - coord1_y) 
+					reflected_y = y
 
-						# Only swap pixels if not out of bound
-						if not (reflected_x >= len(image) or reflected_y >= len(image[0])):
-							temp = image[reflected_x][reflected_y]
-							image[reflected_x][reflected_y] = image[x][y]
-							image[x][y] = temp
+					# Only swap pixels if not out of bound
+					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
+						temp = image[reflected_x][reflected_y]
+						image[reflected_x][reflected_y] = image[x][y]
+						image[x][y] = temp
+					else: 
+						# if out of bounds, still want to change the pixel to 
+						# black (just don't try to access the reflected px). 
+						# Otherwise you'll get weird strips of white
+						image[x][y] = 0
+
 			return image
 		
 		# Vertical fold: (horizontal reflection)
 		if (coord2_x - coord1_x) == 0:
-			for x in range(coord1_y, coord2_y):
-				# row = image[x]
-				for y in range(0, coord1_x): # left side of vertical fold
-					# if image[x][y] == 1:
+			# Determine which half left or right of the fold line is bigger.
+			img_width = len(image[0])
+			if img_width - coord1_x > coord1_x - 0:
+				begin = coord1_x
+				end = img_width
+			else: 
+				begin = 0
+				end = coord1_x
+			
+			for x in range(len(image)): # the height of the img
+				for y in range(begin, end): # the bigger half (left or right)
+					if y < coord1_x:
+						reflected_y = (coord1_x - y) + coord1_x
+					else: 
+						reflected_y = coord1_x - (y - coord1_x) 
 					reflected_x = x
-					reflected_y = coord1_x + (coord1_x - y) - 1
 
 					# Only swap pixels if not out of bound
-					if not (reflected_x >= len(image) or reflected_y >= len(image[0])):
+					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
 						temp = image[reflected_x][reflected_y]
 						image[reflected_x][reflected_y] = image[x][y]
 						image[x][y] = temp
+					else: 
+						# if out of bounds, still want to change the pixel to 
+						# black (just don't try to access the reflected px). 
+						# Otherwise you'll get weird strips of white
+						image[x][y] = 0
 			return image
 
 		# Calculating fold line 
@@ -122,19 +195,27 @@ class ImageProcessor:
 				A = -1 * slope
 				d = (A * x + y + -1 * C) / (A ** 2 + 1)
 
+				# have to adjust code so that it reflects the bigger section (left or right from the reflection line)!
+				# then have to deal with the calculation of the reflected pt based on that?
+
 				if d >= 0:
-					reflected_x = round(x - 2 * A * d) 
-					reflected_y = round(y - 2 * d) 
+					reflected_x = round(x - 2 * A * d) - 1
+					reflected_y = round(y - 2 * d) - 1 
 					# if x == 160:
 					# 	print("reflected_x =" + str(reflected_x) + ",", "reflected_y =" + str(reflected_y))
 
 					# Only swap pixels if not out of bound
-					if reflected_x < len(image) and reflected_y < len(image[0]):
+					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
 					# if x == 160 and y == 280:
 					# 	print("Original val", image[x][y], "Reflected coords:", reflected_x, ",", reflected_y)
 						temp = image[reflected_x][reflected_y]
 						image[reflected_x][reflected_y] = image[x][y]
 						image[x][y] = temp
+					else: 
+						# if out of bounds, still want to change the pixel to 
+						# black (just don't try to access the reflected px). 
+						# Otherwise you'll get weird strips of white
+						image[x][y] = 0
 					# if x == 160 and y == 280:
 					# 	print("New val", image[x][y])
 		return image
