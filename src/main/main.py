@@ -66,7 +66,7 @@ if __name__ == "__main__":
     solutions_img = ['src/image/sol1.jpg', 'src/image/sol2.jpg', 'src/image/sol3.jpg', 'src/image/sol4.jpg', 'src/image/sol5.jpg']
 
     #------------------------------------------------------------------------------
-    input_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg']
+    input_arr = ['src/image/2in1.jpg', 'src/image/2in2.jpg']
     
     model = Model()
     # 1D array of processed bitmap images in Image type for each state
