@@ -64,14 +64,14 @@ class Paper:
         #          ...                       :
         #                                    :
         if lstBottom[0] >= lstTop[0]:
-            finalCoordinates = [[topRow, lstTop[0]], [bottomRow, lstBottom[-1]]]
+            finalCoordinates = [[lstTop[0], topRow], [lstBottom[-1], bottomRow]]
         # Case 2: 
         #          ...
         #       ...
         #    ...
         # ...
         elif lstBottom[0] < lstTop[0]:
-            finalCoordinates = [[topRow, lstTop[-1]], [bottomRow, lstBottom[0]]]
+            finalCoordinates = [[lstTop[-1], topRow], [lstBottom[0], bottomRow]]
         return finalCoordinates
 
     def fold(self, inputs):
@@ -101,9 +101,12 @@ class Paper:
                 # find max and min coordinates
                 coord = self.compute_max_min_coord(flip_line)
                 self.op_stack.append(coord)
-                ## reflect
-                #reflect()
-
+                print(coord)
+                
+                reflected = ImageProcessor.reflect(intersect, coord)
+                reflected = np.dot((reflected > 0).astype(float),255)
+                im = Image.fromarray(reflected.astype(np.uint8))
+                im.save("src/image/test_reflected.bmp")
         return stack
 
     def punch(self, inputs, stack):
