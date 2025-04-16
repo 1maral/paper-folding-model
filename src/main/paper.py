@@ -36,7 +36,7 @@ class Paper:
     def compute_max_min_coord(self, flip_line):
         # find min & max row
         rows, cols = flip_line.shape
-        topRow = rows-1
+        topRow = rows - 1
         bottomRow = 0
         for row in range(rows):
             for col in range(cols):
