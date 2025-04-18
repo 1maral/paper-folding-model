@@ -18,10 +18,10 @@ class Paper:
         self.op_stack = op_stack
 
     def extend_paper(self, old_img):
-        copied_img = old_img.copy()
+        copied_img = np.copy(old_img)
         rows, cols = old_img.shape
-        for row in range(rows):
-            for col in range(cols):
+        for row in range(0, rows):
+            for col in range(0, cols):
                 if old_img[row, col] == 1:
                     if row - 1 >= 0: # Extend up
                         copied_img[row - 1, col] = 1
@@ -103,8 +103,9 @@ class Paper:
                 flip = 1 - input_img # flip the input bitmap
                 intersect = np.logical_and(flip, stack_img).astype(int)
 
+                # flap = np.copy(intersect) # intersect.copy()
                 ImageProcessor.bmp_image(flip, "testing/flip-fig-3", False)
-                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect", False)
+                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect", True)
 
                 # Figure 4: replace image in stack with the intersection of input image and stack image
                 stack[cur] = np.logical_and(stack_img, input_img).astype(int)
@@ -117,7 +118,7 @@ class Paper:
                 flip_line = np.logical_and(extended_input_img, extended_intersect).astype(int) # find flip line, flipline = 1
                 flip_line = np.dot((flip_line > 0).astype(float),255)
 
-                ImageProcessor.bmp_image(flip_line, "testing/fold-line", False)
+                ImageProcessor.bmp_image(flip_line, "testing/fold-line", True)
                 
                 # find max and min coordinates
                 coord = self.compute_max_min_coord(flip_line)
@@ -127,21 +128,11 @@ class Paper:
                 print(coord)
 
                 # reflect
-                flap = intersect.copy()
-                folded_flap = ImageProcessor.reflect(flap, coord)
+                folded_flap = ImageProcessor.reflect(intersect, coord)
                 self.img_stack.append(folded_flap)
 
-                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy", False)
-
-                # curr_img = np.dot((flap > 0).astype(float),255)
-                # im = Image.fromarray(curr_img.astype(np.uint8))
-                # im.save("src/image/testing/intersect-copy.jpg")
-                # im.show()
-
-                # curr_img = np.dot((folded_flap > 0).astype(float),255)
-                # im = Image.fromarray(curr_img.astype(np.uint8))
-                # im.save("src/image/testing/folded-flap.bmp")
-                # im.show()
+                # ImageProcessor.bmp_image(flap, "testing/intersect-copy", True)
+                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy", True)
 
         return
 
