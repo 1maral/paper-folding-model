@@ -30,36 +30,11 @@ class ImageProcessor:
 		bitmap = np.dot((bitmap < 128).astype(float),255)
 		im = Image.fromarray(bitmap.astype(np.uint8))
 		im.save(img.split('.')[0] + ".bmp")
-
-		return(bitmap_binary)
-	
-	# Gives a single image and makes it a bitmap representation
-	@staticmethod
-	def img_bitmap(img):
-		imgp = Image.open(img)
-		ary = np.array(imgp)
-
-		# Split the three channels
-		r,g,b = np.split(ary, 3, axis=2)
-		r = r.reshape(-1)
-		g = r.reshape(-1)
-		b = r.reshape(-1)
-
-		# Standard RGB to grayscale 
-		bitmap = 0.299 * r + 0.587 * g + 0.114 * b
-		bitmap = np.array(bitmap).reshape([ary.shape[0], ary.shape[1]])
-
-		# Convert to 1s and 0s
-		bitmap_binary = (bitmap < 128).astype(int)
-
-		bitmap = np.dot((bitmap < 128).astype(float),255)
-		im = Image.fromarray(bitmap.astype(np.uint8))
-		im.save(img.split('.')[0] + ".bmp")
-
 		return(bitmap_binary)
 	
 	# =============================================================
 	# Comment: would it make more sense to make `img_arr` a field?
+	# - not sure.
 	# =============================================================
 
 	# process all the images in the array through the local function
@@ -70,39 +45,15 @@ class ImageProcessor:
 			processed_img.append(self.img_bitmap(img_arr[x]))
 		return(processed_img)
 	
-	# for non-jpg conversions
-	def img_process1(self, img_arr):
-		processed_img = []
-		for x in range (0, len(img_arr)):
-			processed_img.append(self.img_bitmap1(img_arr[x]))
-		return(processed_img)
-	
-	# To convert from bmp to bitmap (from Claude)
-	@staticmethod
-	def img_bitmap1(img):
-		"""Converts image to binary bitmap representation.
-		Preserves white (255) as 1 and black (0) as 0.
-		"""
-		try:
-			# Read image
-			image = Image.open(img)
-			
-			# Convert to grayscale if RGB
-			if image.mode == 'RGB':
-				image = image.convert('L')
-			
-			# Convert to numpy array
-			ary = np.array(image)
-			
-			# Normalize to binary (0 and 1)
-			# White (255) becomes 1, Black (0) becomes 0
-			return (ary > 128).astype(int)
-			
-		except Exception as e:
-			print(f"Error processing image {img}: {e}")
-			return None
+    # convert numpy array to image and save in testing folder with a given name
+	def bmp_image(arr, img_name, show):
+		arr = np.dot((arr > 0).astype(float),255)
+		im = Image.fromarray(arr.astype(np.uint8))
+		im.save("src/image/" + img_name + ".jpg")
+		if show == True:
+			im.show()
+		return
 
-	
 	@staticmethod
 	# Note (delete later): Used in the `fold` and `unfold` methods.
 	def reflect(image, fold_line):

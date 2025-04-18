@@ -94,32 +94,19 @@ class Paper:
             for cur in range(0, stack_length): 
                 stack_img = stack[cur] # pop from stack
 
-                curr_img = np.dot((stack_img > 0).astype(float),255)
-                im = Image.fromarray(curr_img.astype(np.uint8))
-                im.save("src/image/testing/popped.bmp")
-                im.show()
+                ImageProcessor.bmp_image(stack_img, "testing/popped", True)
 
                 # Figure 3: intersection of fliped input image and stack image
                 flip = 1 - input_img # flip the input bitmap
                 intersect = np.logical_and(flip, stack_img).astype(int)
 
-                curr_img = np.dot((flip > 0).astype(float),255)
-                im = Image.fromarray(curr_img.astype(np.uint8))
-                im.save("src/image/testing/flip-fig-3.bmp")
-                im.show()
-
-                curr_img = np.dot((intersect > 0).astype(float),255)
-                im = Image.fromarray(curr_img.astype(np.uint8))
-                im.save("src/image/testing/flap-fig-3.bmp")
-                im.show()
+                ImageProcessor.bmp_image(flip, "testing/flip-fig-3", True)
+                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect", True)
 
                 # Figure 4: replace image in stack with the intersection of input image and stack image
                 stack[cur] = np.logical_and(stack_img, input_img).astype(int)
 
-                curr_img = np.dot((stack[cur] > 0).astype(float),255)
-                im = Image.fromarray(curr_img.astype(np.uint8))
-                im.save("src/image/testing/replace-fig-4.bmp")
-                im.show()
+                ImageProcessor.bmp_image(stack[cur], "testing/replace-fig-4", True)
 
                 # Figure 5:
                 extended_input_img = self.extend_paper(input_img) # Extend input_img
@@ -127,10 +114,7 @@ class Paper:
                 flip_line = np.logical_and(extended_input_img, extended_intersect).astype(int) # find flip line, flipline = 1
                 flip_line = np.dot((flip_line > 0).astype(float),255)
 
-                curr_img = np.dot((flip_line > 0).astype(float),255)
-                im = Image.fromarray(curr_img.astype(np.uint8))
-                im.save("src/image/testing/fold-line.bmp")
-                im.show()
+                ImageProcessor.bmp_image(flip_line, "testing/fold-line", True)
                 
                 # find max and min coordinates
                 coord = self.compute_max_min_coord(flip_line)
@@ -144,10 +128,7 @@ class Paper:
                 folded_flap = ImageProcessor.reflect(flap, coord)
                 self.img_stack.append(folded_flap)
 
-                curr_img = np.dot((folded_flap > 0).astype(float),255)
-                im = Image.fromarray(curr_img.astype(np.uint8))
-                im.save("src/image/testing/intersect-copy.jpg")
-                im.show()
+                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy", True)
 
                 # curr_img = np.dot((flap > 0).astype(float),255)
                 # im = Image.fromarray(curr_img.astype(np.uint8))
@@ -194,34 +175,21 @@ class Paper:
             folded_flap = self.img_stack.pop()
             base_layer = self.img_stack.pop(0)
 
-            img = np.dot((base_layer > 0).astype(float),255)
-            im = Image.fromarray(img.astype(np.uint8))
-            im.save("src/image/base-layer.bmp")
-            # im.show()
-
-            img = np.dot((folded_flap > 0).astype(float),255)
-            im = Image.fromarray(img.astype(np.uint8))
-            im.save("src/image/folded_flap-layer.bmp")
-            # im.show()
+            ImageProcessor.bmp_image(base_layer, "base-layer", False)
+            ImageProcessor.bmp_image(folded_flap, "folded_flap-layer", False)
 
             # Unfold the top layer of the paper, which is a flap. 
             fold_line = self.op_stack.pop()
             unfolded_flap = ImageProcessor.reflect(folded_flap, fold_line)
 
-            img = np.dot((unfolded_flap > 0).astype(float),255)
-            im = Image.fromarray(img.astype(np.uint8))
-            im.save("src/image/unfolded_flap-layer.bmp")
-            # im.show()
+            ImageProcessor.bmp_image(unfolded_flap, "unfolded_flap-layer", False)
 
             # Combine these two layers. (Reconstruct a state of the unfolded 
             # paper?)
             unfolded_layer = ImageProcessor.or_operation(unfolded_flap, 
                                                          base_layer)
             
-            unfolded_paper = np.dot((unfolded_layer > 0).astype(float),255)
-            im = Image.fromarray(unfolded_paper.astype(np.uint8))
-            im.save("src/image/unfolded-layer.bmp")
-            # im.show()
+            ImageProcessor.bmp_image(unfolded_layer, "unfolded-layer", False)
 
             # Add this partly unfolded paper to a new image stack.
             new_img_stack.append(unfolded_layer)

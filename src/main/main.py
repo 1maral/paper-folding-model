@@ -86,11 +86,9 @@ if __name__ == "__main__":
     unfolded_paper = model.paper.unfold()
 
     # =============================================================================
-
-    unfolded_paper = np.dot((unfolded_paper > 0).astype(float),255)
-    im = Image.fromarray(unfolded_paper.astype(np.uint8))
-    im.save("src/image/testing/unfolded.bmp")
-    im.show()
+    # Unfolded_paper numpy array is processed into image bmp, then it
+    # is saved in the testing folder as unfolded and shown as boolean is TRUE
+    ImageProcessor.bmp_image(unfolded_paper, "testing/unfolded", True)
 
     # =============================================================================
     # IGNORE THIS SECTION? JUST USE THE LAST SECTION FOR TESTING UNFOLD!
