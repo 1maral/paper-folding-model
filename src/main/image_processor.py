@@ -49,7 +49,7 @@ class ImageProcessor:
 	def bmp_image(arr, img_name, show):
 		arr = np.dot((arr > 0).astype(float),255)
 		im = Image.fromarray(arr.astype(np.uint8))
-		im.save("src/image/" + img_name + ".jpg")
+		im.save("src/image/" + img_name + ".bmp")
 		if show == True:
 			im.show()
 		return
@@ -63,11 +63,13 @@ class ImageProcessor:
 		coord2_x = fold_line[1][0]
 		coord2_y = fold_line[1][1]
 
+		# Account for how fold line is returned by op_stack
 		# Correct coords of fold_line for horizontal & vertical folds 
 		if coord2_y - coord1_y == 1: # horizontal fold line
 			coord1_y += 1 # arbitrary increment to get the coords on the same row
 		if coord2_x - coord1_x == 1: # vertical fold line
 			coord1_x += 1 # arbitrary increment to get the coords on the same col
+
 		# Adjust if coord is near end bound b/c end bound is exclusive 
 		if coord1_x == len(image[0]) - 1:
 			coord1_x += 1
@@ -78,7 +80,7 @@ class ImageProcessor:
 		if coord2_y == len(image) - 1:
 			coord2_y += 1
 			
-		# Check x-coords
+		# Check x-coords to find the max
 		max_x = coord1_x
 		min_x = coord2_x
 		if coord2_x > coord1_x:
@@ -86,7 +88,7 @@ class ImageProcessor:
 			min_x = coord1_x
 
 		# # # Check if fold line is horizontal or vertical
-		# # # Note: x of 2D array refers to "y-axis" and yoord of 2D array refers to "x-axis" 
+		# # # Note: x of 2D array refers to "y-axis" and coord of 2D array refers to "x-axis" 
 		# # # but it's flipped (or normal) for the fold line coords...
 
 		# # # MAYBE SHOULD SWITCH X AND Y FOR CLARITY B/C X ACTUALLY REPRESENTS THE Y-COORD AND Y 
@@ -160,6 +162,9 @@ class ImageProcessor:
 		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
 		C = coord1_y - slope * coord1_x
 
+		# Creating a copy of the image to be reflected
+		reflected_img = np.copy(image)
+
 		# reflection_line = []
 		# Find pixels on reflection line
 		# for x in range(min_x, max_x):
@@ -167,41 +172,32 @@ class ImageProcessor:
 
 		# print(reflection_line)
 
-		for x in range(min_x, max_x):
-			# row = image[x]
-			for y in range(coord1_y, coord2_y):
-				# if image[x][y] == 0:
-				# if x < reflection_line[x - min_x]:
-				# if x == 160:
-					# print("original x =" + str(x) + ",", "original y =" + str(y))
+		for x in range(0, len(image)):
+			for y in range(0, len(image[0])):
 				# d = (Ax + By + C) / A^2 + B^2
 				A = -1 * slope
 				d = (A * x + y + -1 * C) / (A ** 2 + 1)
 
-				# have to adjust code so that it reflects the bigger section (left or right from the reflection line)!
-				# then have to deal with the calculation of the reflected pt based on that?
+				if x == 160 and y == 240:
+					print("here")
 
-				if d >= 0:
+				# if d >= 0:
+				# if it's white pixel we swap in a copy of the image.
+				if image[x][y] == 1:
 					reflected_x = round(x - 2 * A * d) - 1
 					reflected_y = round(y - 2 * d) - 1 
-					# if x == 160:
-					# 	print("reflected_x =" + str(reflected_x) + ",", "reflected_y =" + str(reflected_y))
 
 					# Only swap pixels if not out of bound
 					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
-					# if x == 160 and y == 280:
-					# 	print("Original val", image[x][y], "Reflected coords:", reflected_x, ",", reflected_y)
-						temp = image[reflected_x][reflected_y]
-						image[reflected_x][reflected_y] = image[x][y]
-						image[x][y] = temp
+						temp = reflected_img[reflected_x][reflected_y]
+						reflected_img[reflected_x][reflected_y] = reflected_img[x][y]
+						reflected_img[x][y] = temp
 					else: 
 						# if out of bounds, still want to change the pixel to 
 						# black (just don't try to access the reflected px). 
 						# Otherwise you'll get weird strips of white
-						image[x][y] = 0
-					# if x == 160 and y == 280:
-					# 	print("New val", image[x][y])
-		return image
+						reflected_img[x][y] = 0
+		return reflected_img
 
 	@staticmethod
 	def or_operation(image1, image2):

@@ -38,6 +38,8 @@ class Paper:
         rows, cols = flip_line.shape
         topRow = rows - 1
         bottomRow = 0
+
+        # This is to find the smallest topRow and Biggest bottomRow
         for row in range(rows):
             for col in range(cols):
                 if flip_line[row, col]:
@@ -46,8 +48,8 @@ class Paper:
                     if row >= bottomRow:
                         bottomRow = row
 
-        # lstMin = [col1, col2, col3...]
-        # lstMax = [col1, col2, col3...]
+        # lstTop = [col1, col2, col3...]
+        # lstBottom = [col1, col2, col3...]
         lstTop = []
         lstBottom = []
         for col in range(cols):
@@ -56,6 +58,7 @@ class Paper:
             if flip_line[topRow, col] == 255:
                 lstTop.append(col)
 
+        print(flip_line)
         finalCoordinates = []
         # Case 1:       Case 3:              Case 4:
         # ...           .................    :
@@ -94,19 +97,19 @@ class Paper:
             for cur in range(0, stack_length): 
                 stack_img = stack[cur] # pop from stack
 
-                ImageProcessor.bmp_image(stack_img, "testing/popped", True)
+                ImageProcessor.bmp_image(stack_img, "testing/popped", False)
 
                 # Figure 3: intersection of fliped input image and stack image
                 flip = 1 - input_img # flip the input bitmap
                 intersect = np.logical_and(flip, stack_img).astype(int)
 
-                ImageProcessor.bmp_image(flip, "testing/flip-fig-3", True)
-                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect", True)
+                ImageProcessor.bmp_image(flip, "testing/flip-fig-3", False)
+                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect", False)
 
                 # Figure 4: replace image in stack with the intersection of input image and stack image
                 stack[cur] = np.logical_and(stack_img, input_img).astype(int)
 
-                ImageProcessor.bmp_image(stack[cur], "testing/replace-fig-4", True)
+                ImageProcessor.bmp_image(stack[cur], "testing/replace-fig-4", False)
 
                 # Figure 5:
                 extended_input_img = self.extend_paper(input_img) # Extend input_img
@@ -114,7 +117,7 @@ class Paper:
                 flip_line = np.logical_and(extended_input_img, extended_intersect).astype(int) # find flip line, flipline = 1
                 flip_line = np.dot((flip_line > 0).astype(float),255)
 
-                ImageProcessor.bmp_image(flip_line, "testing/fold-line", True)
+                ImageProcessor.bmp_image(flip_line, "testing/fold-line", False)
                 
                 # find max and min coordinates
                 coord = self.compute_max_min_coord(flip_line)
@@ -128,7 +131,7 @@ class Paper:
                 folded_flap = ImageProcessor.reflect(flap, coord)
                 self.img_stack.append(folded_flap)
 
-                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy", True)
+                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy", False)
 
                 # curr_img = np.dot((flap > 0).astype(float),255)
                 # im = Image.fromarray(curr_img.astype(np.uint8))

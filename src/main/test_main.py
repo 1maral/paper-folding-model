@@ -35,14 +35,15 @@ class TestImageProcessor(unittest.TestCase):
 
     def test_reflect_diagonal_fold(self):
         # Test the diagonal fold
-        bitmap1 = ImageProcessor.img_bitmap("src/image/2in1.jpg")
+        bitmap1 = ImageProcessor.img_bitmap("src/image/2in5.jpg")
         
         # Specify the fold axis for diagonal fold
-        fold_line = [(320, 0), (0, 320)]
+        # fold_line = [(0, 0), (320, 320)]
+        fold_line = [(160, 160), (240, 320)]
         reflected = ImageProcessor.reflect(bitmap1, fold_line)
         
         # Convert back to image and save/show
-        ImageProcessor.bmp_image(reflected, "testing/reflected_diagonal", False)
+        ImageProcessor.bmp_image(reflected, "testing/reflected_diagonal", True)
         
         # Add assertion to ensure image is not unchanged
         self.assertFalse(np.array_equal(bitmap1, reflected), "Reflection did not change the image")
