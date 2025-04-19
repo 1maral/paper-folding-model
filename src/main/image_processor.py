@@ -1,5 +1,6 @@
-from PIL import Image
+from PIL import Image, ImageFilter
 import numpy as np
+import sys
 
 class ImageProcessor:
 
@@ -42,7 +43,10 @@ class ImageProcessor:
 	def img_process(self, img_arr):
 		processed_img = []
 		for x in range (0, len(img_arr)):
-			processed_img.append(self.img_bitmap(img_arr[x]))
+			if img_arr[x].split('.')[1] == "jpg":
+				processed_img.append(self.img_bitmap(img_arr[x]))
+			else:
+				processed_img.append(self.img_bitmap1(img_arr[x]))
 		return(processed_img)
 	
     # convert numpy array to image and save in testing folder with a given name
@@ -54,6 +58,29 @@ class ImageProcessor:
 			im.show()
 		return
 
+	# To convert from bmp to bitmap (from Claude)
+	@staticmethod
+	def img_bitmap1(img):
+		"""Converts a PNG image to a black & white bitmap and saves it."""
+		try:
+			# Open and convert to grayscale
+			image = Image.open(img).convert('L')
+			ary = np.array(image)
+
+			# Apply threshold (128) to get binary array
+			binary_array = (ary > 128).astype(np.uint8) * 255
+
+			# Create black & white image with explicit 'L' mode
+			bw_image = Image.fromarray(binary_array, mode='L')
+			
+			# Save BMP
+			bw_image.save(img.split('.')[0] + ".bmp")
+
+			return (binary_array // 255).astype(int)
+		except Exception as e:
+			print(f"Error processing image {img}: {e}")
+			return None
+		
 	@staticmethod
 	# Note (delete later): Used in the `fold` and `unfold` methods.
 	def reflect(image, fold_line):
