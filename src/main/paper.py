@@ -58,7 +58,7 @@ class Paper:
             if flip_line[topRow, col] == 255:
                 lstTop.append(col)
 
-        print(flip_line)
+        # print(flip_line)
         finalCoordinates = []
         # Case 1:       Case 3:              Case 4:
         # ...           .................    :
@@ -82,13 +82,10 @@ class Paper:
         return finalCoordinates
 
     def fold(self, inputs):
-        # create an white paper and put it into the stack
-        # unfolded_paper = np.ones((320, 320), dtype=int)
-        # stack = []
-        # stack.append(unfolded_paper)
-
         # Reference current image stack.
         stack = self.img_stack
+
+        iteration = 1
 
         # Note: You can comment on the im.show() parts while in debugger mode
         # to see the images while debugging.
@@ -105,7 +102,7 @@ class Paper:
 
                 # flap = np.copy(intersect) # intersect.copy()
                 ImageProcessor.bmp_image(flip, "testing/flip-fig-3", False)
-                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect", True)
+                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect", False)
 
                 # Figure 4: replace image in stack with the intersection of input image and stack image
                 stack[cur] = np.logical_and(stack_img, input_img).astype(int)
@@ -118,7 +115,10 @@ class Paper:
                 flip_line = np.logical_and(extended_input_img, extended_intersect).astype(int) # find flip line, flipline = 1
                 flip_line = np.dot((flip_line > 0).astype(float),255)
 
-                ImageProcessor.bmp_image(flip_line, "testing/fold-line", True)
+                ImageProcessor.bmp_image(flip_line, "testing/fold-line", False)
+                
+                if iteration == 2:
+                    print("Iteration 2")
                 
                 # find max and min coordinates
                 coord = self.compute_max_min_coord(flip_line)
@@ -131,8 +131,13 @@ class Paper:
                 folded_flap = ImageProcessor.reflect(intersect, coord)
                 self.img_stack.append(folded_flap)
 
-                # ImageProcessor.bmp_image(flap, "testing/intersect-copy", True)
+
+                # At the second iteration, the reflect dies!
+                ImageProcessor.bmp_image(flip_line, "testing/fold-line", True)
+                ImageProcessor.bmp_image(intersect, "testing/intersect", True)
                 ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy", True)
+
+                iteration += 1
 
         return
 
@@ -154,7 +159,7 @@ class Paper:
         #     im.save("src/image/base-layer.bmp")
         #     im.show()
 
-        print(len(self.img_stack))
+        # print(len(self.img_stack))
 
         # Base case: Stop unfolding when only one layer remains.
         if len(self.img_stack) == 1:

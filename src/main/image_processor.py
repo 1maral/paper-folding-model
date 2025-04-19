@@ -32,6 +32,31 @@ class ImageProcessor:
 		im.save(img.split('.')[0] + ".bmp")
 		return(bitmap_binary)
 	
+	# To convert from bmp to bitmap (from Claude)
+	@staticmethod
+	def img_bitmap1(img):
+		"""Converts image to binary bitmap representation.
+		Preserves white (255) as 1 and black (0) as 0.
+		"""
+		try:
+			# Read image
+			image = Image.open(img)
+			
+			# Convert to grayscale if RGB
+			if image.mode == 'RGB':
+				image = image.convert('L')
+			
+			# Convert to numpy array
+			ary = np.array(image)
+			
+			# Normalize to binary (0 and 1)
+			# White (255) becomes 1, Black (0) becomes 0
+			return (ary > 128).astype(int)
+			
+		except Exception as e:
+			print(f"Error processing image {img}: {e}")
+			return None
+	
 	# =============================================================
 	# Comment: would it make more sense to make `img_arr` a field?
 	# - not sure.
@@ -70,6 +95,8 @@ class ImageProcessor:
 		if coord2_x - coord1_x == 1: # vertical fold line
 			coord1_x += 1 # arbitrary increment to get the coords on the same col
 
+		print(image)
+
 		# Adjust if coord is near end bound b/c end bound is exclusive 
 		if coord1_x == len(image[0]) - 1:
 			coord1_x += 1
@@ -81,11 +108,11 @@ class ImageProcessor:
 			coord2_y += 1
 			
 		# Check x-coords to find the max
-		max_x = coord1_x
-		min_x = coord2_x
-		if coord2_x > coord1_x:
-			max_x = coord2_x
-			min_x = coord1_x
+		# max_x = coord1_x
+		# min_x = coord2_x
+		# if coord2_x > coord1_x:
+		# 	max_x = coord2_x
+		# 	min_x = coord1_x
 
 		# # # Check if fold line is horizontal or vertical
 		# # # Note: x of 2D array refers to "y-axis" and coord of 2D array refers to "x-axis" 
@@ -159,7 +186,7 @@ class ImageProcessor:
 			return image
 
 		# Calculating fold line 
-		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
+		slope = (coord2_y - coord1_y) / (coord2_x - coord1_x)
 		C = coord1_y - slope * coord1_x
 
 		# Creating a copy of the image to be reflected
@@ -175,17 +202,33 @@ class ImageProcessor:
 		for x in range(0, len(image)):
 			for y in range(0, len(image[0])):
 				# d = (Ax + By + C) / A^2 + B^2
+
 				A = -1 * slope
-				d = (A * x + y + -1 * C) / (A ** 2 + 1)
+				B = 1
 
-				if x == 160 and y == 240:
-					print("here")
+           		# original eq: d = (A * x + B * y + -1 * C) / (A * A + B * B)
+				d = (A * x + y + -1 * C) / (A ** 2 + B ** 2)
 
-				# if d >= 0:
 				# if it's white pixel we swap in a copy of the image.
-				if image[x][y] == 1:
-					reflected_x = round(x - 2 * A * d) - 1
-					reflected_y = round(y - 2 * d) - 1 
+				# on_fold_line = False
+
+				# for coord in fold_line:
+				# 	if x == coord[0] and y == coord[1]:
+				# 		on_fold_line = True
+
+				if image[x][y] == 1: # and not on_fold_line:
+					reflected_x = int(np.floor(x - 2 * A * d)) #- 1
+					reflected_y = int(np.floor(y - 2 * B *  d)) #- 1 
+				
+					if x == 0 and y == 0:
+						print("(0, 0)")
+						print(image[x][y] == 1)
+						print("reflected:", "x =", str(reflected_x) + ",", "y =", str(reflected_y))
+					
+					if x == 10 and y == 0:
+						print("(10, 0)")
+						print(image[x][y] == 1)
+						print("reflected:", "x =", str(reflected_x) + ",", "y =", str(reflected_y))
 
 					# Only swap pixels if not out of bound
 					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
