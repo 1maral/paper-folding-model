@@ -68,7 +68,7 @@ class ImageProcessor:
 			ary = np.array(image)
 
 			# Apply threshold (128) to get binary array
-			binary_array = (ary > 128).astype(np.uint8) * 255
+			binary_array = (ary < 128).astype(np.uint8) * 255
 
 			# Create black & white image with explicit 'L' mode
 			bw_image = Image.fromarray(binary_array, mode='L')
