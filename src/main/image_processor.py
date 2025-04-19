@@ -122,8 +122,6 @@ class ImageProcessor:
 		if coord2_x - coord1_x == 1: # vertical fold line
 			coord1_x += 1 # arbitrary increment to get the coords on the same col
 
-		print(image)
-
 		# Adjust if coord is near end bound b/c end bound is exclusive 
 		if coord1_x == len(image[0]) - 1:
 			coord1_x += 1
@@ -219,10 +217,10 @@ class ImageProcessor:
 		# Creating a copy of the image to be reflected
 		reflected_img = np.copy(image)
 
-		# reflection_line = []
+		reflection_line = []
 		# Find pixels on reflection line
-		# for x in range(min_x, max_x):
-		# 	reflection_line.append(slope * x + C - 1)
+		for x in range(0, len(image)):
+			reflection_line.append(np.floor(slope * x + C))
 
 		# print(reflection_line)
 
@@ -243,30 +241,34 @@ class ImageProcessor:
 				# 	if x == coord[0] and y == coord[1]:
 				# 		on_fold_line = True
 
-				if image[x][y] == 1: # and not on_fold_line:
-					reflected_x = int(np.floor(x - 2 * A * d)) #- 1
-					reflected_y = int(np.floor(y - 2 * B *  d)) #- 1 
+				if (image[x][y] == 1) and not (reflection_line[x] == y): # and not on_fold_line:
+					reflected_x = int(np.floor(x - 2 * A * d))
+					reflected_y = int(np.floor(y - 2 * B * d))
 				
 					if x == 0 and y == 0:
 						print("(0, 0)")
 						print(image[x][y] == 1)
 						print("reflected:", "x =", str(reflected_x) + ",", "y =", str(reflected_y))
 					
-					if x == 10 and y == 0:
-						print("(10, 0)")
-						print(image[x][y] == 1)
-						print("reflected:", "x =", str(reflected_x) + ",", "y =", str(reflected_y))
+					# if x == 10 and y == 0:
+					# 	print("(10, 0)")
+					# 	print(image[x][y] == 1)
+					# 	print("reflected:", "x =", str(reflected_x) + ",", "y =", str(reflected_y))
 
 					# Only swap pixels if not out of bound
 					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
+						# if reflected_x == len(image):
+						# 	reflected_x -= 1
+						# if reflected_y == len(image[0]):
+						# 	reflected_y -= 1
 						temp = reflected_img[reflected_x][reflected_y]
 						reflected_img[reflected_x][reflected_y] = reflected_img[x][y]
 						reflected_img[x][y] = temp
-					else: 
-						# if out of bounds, still want to change the pixel to 
-						# black (just don't try to access the reflected px). 
-						# Otherwise you'll get weird strips of white
-						reflected_img[x][y] = 0
+					# else: 
+					# 	# if out of bounds, still want to change the pixel to 
+					# 	# black (just don't try to access the reflected px). 
+					# 	# Otherwise you'll get weird strips of white
+					# 	reflected_img[x][y] = 0
 		return reflected_img
 
 	@staticmethod

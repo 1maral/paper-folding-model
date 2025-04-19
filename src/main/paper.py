@@ -100,13 +100,13 @@ class Paper:
                 intersect = np.logical_and(flip, stack_img).astype(int)
 
                 # flap = np.copy(intersect) # intersect.copy()
-                ImageProcessor.bmp_image(flip, "testing/flip-fig-3" + str(iteration) + str(cur), True)
+                ImageProcessor.bmp_image(flip, "testing/flip-fig-3" + str(iteration) + str(cur), False)
                 ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect" + str(iteration) + str(cur), True)
 
                 # Figure 4: replace image in stack with the intersection of input image and stack image
                 stack[cur] = np.logical_and(stack_img, input_img).astype(int)
 
-                ImageProcessor.bmp_image(stack[cur], "testing/replace-fig-4" + str(iteration) + str(cur), True)
+                ImageProcessor.bmp_image(stack[cur], "testing/replace-fig-4" + str(iteration) + str(cur), False)
 
                 # Figure 5:
                 extended_input_img = self.extend_paper(input_img) # Extend input_img
@@ -114,14 +114,14 @@ class Paper:
                 flip_line = np.logical_and(extended_input_img, extended_intersect).astype(int) # find flip line, flipline = 1
                 flip_line = np.dot((flip_line > 0).astype(float),255)
 
-                ImageProcessor.bmp_image(flip_line, "testing/fold-line" + str(iteration) + str(cur), True)
+                ImageProcessor.bmp_image(flip_line, "testing/fold-line" + str(iteration) + str(cur), False)
                 
                 # find max and min coordinates
                 coord = self.compute_max_min_coord(flip_line)
                 self.op_stack.append(coord)
                 
-                print(flip_line)
-                print(coord)
+                # print(flip_line)
+                # print(coord)
 
                 # reflect
                 folded_flap = ImageProcessor.reflect(intersect, coord)
@@ -130,7 +130,7 @@ class Paper:
                 stack.append(folded_flap)
 
                 # ImageProcessor.bmp_image(flap, "testing/intersect-copy", True)
-                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy" + str(iteration) + str(cur), True)
+                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy" + str(iteration) + str(cur), False)
                 iteration += 1
 
                 iteration += 1

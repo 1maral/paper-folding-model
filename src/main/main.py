@@ -45,13 +45,15 @@ class Model:
             matching_px = 0
 
             # Count the number of matching pixels.
-            for row in range(rows):
-                for col in range(cols):
+            for row in range(0, rows):
+                for col in range(0, cols):
                     if unfolded_paper[row][col] == curr_solution[row][col]:
                         matching_px += 1
 
             # Calculate the similarity in percentage.
-            matching_percentage[i] = matching_px / (rows * cols) * 100
+            matching_percentage[i] = (matching_px / (rows * cols)) * 100
+
+        print(matching_percentage)
 
         # Return the most similar solution.
         return np.argmax(matching_percentage) + 1 # to return the actual solution number, not the index!
