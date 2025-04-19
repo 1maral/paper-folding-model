@@ -42,7 +42,10 @@ class ImageProcessor:
 	def img_process(self, img_arr):
 		processed_img = []
 		for x in range (0, len(img_arr)):
-			processed_img.append(self.img_bitmap(img_arr[x]))
+			if img_arr[x].split('.')[1] == "jpg":
+				processed_img.append(self.img_bitmap(img_arr[x]))
+			else:
+				processed_img.append(self.img_bitmap1(img_arr[x]))
 		return(processed_img)
 
     # convert numpy array to image and save in testing folder with a given name
@@ -53,6 +56,29 @@ class ImageProcessor:
 		if show == True:
 			im.show()
 		return
+	
+	# To convert from bmp to bitmap (from Claude)
+	@staticmethod
+	def img_bitmap1(img):
+		"""Converts a PNG image to a black & white bitmap and saves it."""
+		try:
+			# Open and convert to grayscale
+			image = Image.open(img).convert('L')
+			ary = np.array(image)
+
+			# Apply threshold (128) to get binary array
+			binary_array = (ary < 128).astype(np.uint8) * 255
+
+			# Create black & white image with explicit 'L' mode
+			bw_image = Image.fromarray(binary_array, mode='L')
+			
+			# Save BMP
+			bw_image.save(img.split('.')[0] + ".bmp")
+
+			return (binary_array // 255).astype(int)
+		except Exception as e:
+			print(f"Error processing image {img}: {e}")
+			return None
 
 	@staticmethod
 	# Note (delete later): Used in the `fold` and `unfold` methods.
@@ -174,11 +200,6 @@ class ImageProcessor:
 
 		for x in range(0, len(image)):
 			for y in range(0, len(image[0])):
-
-
-
-
-
 				# d = (Ax + By + C) / A^2 + B^2
 				A = -1 * slope
 				d = (A * x + y + -1 * C) / (A ** 2 + 1)
@@ -189,26 +210,20 @@ class ImageProcessor:
 				# if d >= 0:
 				# if it's white pixel we swap in a copy of the image.
 				if image[x][y] == 1:
-					reflected_x = round(x - 2 * A * d) - 1
-					reflected_y = round(y - 2 * d) - 1 
-
-
-
+					# floor added
+					reflected_x = int(np.floor(x - 2 * A * d))
+					reflected_y = int(np.floor(y - 2 * d))
 					# Only swap pixels if not out of bound
 					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
 						temp = reflected_img[reflected_x][reflected_y]
 						reflected_img[reflected_x][reflected_y] = reflected_img[x][y]
 						reflected_img[x][y] = temp
-
-
 					else: 
 						# if out of bounds, still want to change the pixel to 
 						# black (just don't try to access the reflected px). 
 						# Otherwise you'll get weird strips of white
 						reflected_img[x][y] = 0
 		return reflected_img
-
-
 
 	@staticmethod
 	def or_operation(image1, image2):
