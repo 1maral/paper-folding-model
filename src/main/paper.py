@@ -86,28 +86,27 @@ class Paper:
         stack = self.img_stack
 
         iteration = 1
-
         # Note: You can comment on the im.show() parts while in debugger mode
         # to see the images while debugging.
         for input_img in inputs[:-1]: # all but the punch img
             stack_length = len(stack)
-            for cur in range(0, stack_length): 
+            for cur in range(0, stack_length):
                 stack_img = stack[cur] # pop from stack
 
-                ImageProcessor.bmp_image(stack_img, "testing/popped", False)
+                ImageProcessor.bmp_image(stack_img, "testing/popped" + str(iteration) + " " + str(cur), True)
 
                 # Figure 3: intersection of fliped input image and stack image
                 flip = 1 - input_img # flip the input bitmap
                 intersect = np.logical_and(flip, stack_img).astype(int)
 
                 # flap = np.copy(intersect) # intersect.copy()
-                ImageProcessor.bmp_image(flip, "testing/flip-fig-3", False)
-                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect", False)
+                ImageProcessor.bmp_image(flip, "testing/flip-fig-3" + str(iteration) + str(cur), True)
+                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect" + str(iteration) + str(cur), True)
 
                 # Figure 4: replace image in stack with the intersection of input image and stack image
                 stack[cur] = np.logical_and(stack_img, input_img).astype(int)
 
-                ImageProcessor.bmp_image(stack[cur], "testing/replace-fig-4", False)
+                ImageProcessor.bmp_image(stack[cur], "testing/replace-fig-4" + str(iteration) + str(cur), True)
 
                 # Figure 5:
                 extended_input_img = self.extend_paper(input_img) # Extend input_img
@@ -115,10 +114,7 @@ class Paper:
                 flip_line = np.logical_and(extended_input_img, extended_intersect).astype(int) # find flip line, flipline = 1
                 flip_line = np.dot((flip_line > 0).astype(float),255)
 
-                ImageProcessor.bmp_image(flip_line, "testing/fold-line", False)
-                
-                if iteration == 2:
-                    print("Iteration 2")
+                ImageProcessor.bmp_image(flip_line, "testing/fold-line" + str(iteration) + str(cur), True)
                 
                 # find max and min coordinates
                 coord = self.compute_max_min_coord(flip_line)
@@ -129,13 +125,13 @@ class Paper:
 
                 # reflect
                 folded_flap = ImageProcessor.reflect(intersect, coord)
-                self.img_stack.append(folded_flap)
+                
+                # Appending the reflected flap
+                stack.append(folded_flap)
 
-
-                # At the second iteration, the reflect dies!
-                ImageProcessor.bmp_image(flip_line, "testing/fold-line", True)
-                ImageProcessor.bmp_image(intersect, "testing/intersect", True)
-                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy", True)
+                # ImageProcessor.bmp_image(flap, "testing/intersect-copy", True)
+                ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy" + str(iteration) + str(cur), True)
+                iteration += 1
 
                 iteration += 1
 
