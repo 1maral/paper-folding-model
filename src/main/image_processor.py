@@ -1,6 +1,5 @@
-from PIL import Image, ImageFilter
+from PIL import Image
 import numpy as np
-import sys
 
 class ImageProcessor:
 
@@ -32,32 +31,7 @@ class ImageProcessor:
 		im = Image.fromarray(bitmap.astype(np.uint8))
 		im.save(img.split('.')[0] + ".bmp")
 		return(bitmap_binary)
-	
-	# To convert from bmp to bitmap (from Claude)
-	@staticmethod
-	def img_bitmap1(img):
-		"""Converts image to binary bitmap representation.
-		Preserves white (255) as 1 and black (0) as 0.
-		"""
-		try:
-			# Read image
-			image = Image.open(img)
-			
-			# Convert to grayscale if RGB
-			if image.mode == 'RGB':
-				image = image.convert('L')
-			
-			# Convert to numpy array
-			ary = np.array(image)
-			
-			# Normalize to binary (0 and 1)
-			# White (255) becomes 1, Black (0) becomes 0
-			return (ary > 128).astype(int)
-			
-		except Exception as e:
-			print(f"Error processing image {img}: {e}")
-			return None
-	
+
 	# =============================================================
 	# Comment: would it make more sense to make `img_arr` a field?
 	# - not sure.
@@ -68,12 +42,9 @@ class ImageProcessor:
 	def img_process(self, img_arr):
 		processed_img = []
 		for x in range (0, len(img_arr)):
-			if img_arr[x].split('.')[1] == "jpg":
-				processed_img.append(self.img_bitmap(img_arr[x]))
-			else:
-				processed_img.append(self.img_bitmap1(img_arr[x]))
+			processed_img.append(self.img_bitmap(img_arr[x]))
 		return(processed_img)
-	
+
     # convert numpy array to image and save in testing folder with a given name
 	def bmp_image(arr, img_name, show):
 		arr = np.dot((arr > 0).astype(float),255)
@@ -83,29 +54,6 @@ class ImageProcessor:
 			im.show()
 		return
 
-	# To convert from bmp to bitmap (from Claude)
-	@staticmethod
-	def img_bitmap1(img):
-		"""Converts a PNG image to a black & white bitmap and saves it."""
-		try:
-			# Open and convert to grayscale
-			image = Image.open(img).convert('L')
-			ary = np.array(image)
-
-			# Apply threshold (128) to get binary array
-			binary_array = (ary < 128).astype(np.uint8) * 255
-
-			# Create black & white image with explicit 'L' mode
-			bw_image = Image.fromarray(binary_array, mode='L')
-			
-			# Save BMP
-			bw_image.save(img.split('.')[0] + ".bmp")
-
-			return (binary_array // 255).astype(int)
-		except Exception as e:
-			print(f"Error processing image {img}: {e}")
-			return None
-		
 	@staticmethod
 	# Note (delete later): Used in the `fold` and `unfold` methods.
 	def reflect(image, fold_line):
@@ -131,13 +79,13 @@ class ImageProcessor:
 			coord1_y += 1
 		if coord2_y == len(image) - 1:
 			coord2_y += 1
-			
+
 		# Check x-coords to find the max
-		# max_x = coord1_x
-		# min_x = coord2_x
-		# if coord2_x > coord1_x:
-		# 	max_x = coord2_x
-		# 	min_x = coord1_x
+		max_x = coord1_x
+		min_x = coord2_x
+		if coord2_x > coord1_x:
+			max_x = coord2_x
+			min_x = coord1_x
 
 		# # # Check if fold line is horizontal or vertical
 		# # # Note: x of 2D array refers to "y-axis" and coord of 2D array refers to "x-axis" 
@@ -178,7 +126,7 @@ class ImageProcessor:
 						image[x][y] = 0
 
 			return image
-		
+
 		# Vertical fold: (horizontal reflection)
 		if (coord2_x - coord1_x) == 0:
 			# Determine which half left or right of the fold line is bigger.
@@ -189,7 +137,7 @@ class ImageProcessor:
 			else: 
 				begin = 0
 				end = coord1_x
-			
+
 			for x in range(len(image)): # the height of the img
 				for y in range(begin, end): # the bigger half (left or right)
 					if y < coord1_x:
@@ -211,65 +159,56 @@ class ImageProcessor:
 			return image
 
 		# Calculating fold line 
-		slope = (coord2_y - coord1_y) / (coord2_x - coord1_x)
+		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
 		C = coord1_y - slope * coord1_x
 
 		# Creating a copy of the image to be reflected
 		reflected_img = np.copy(image)
 
-		reflection_line = []
+		# reflection_line = []
 		# Find pixels on reflection line
-		for x in range(0, len(image)):
-			reflection_line.append(np.floor(slope * x + C))
+		# for x in range(min_x, max_x):
+		# 	reflection_line.append(slope * x + C - 1)
 
 		# print(reflection_line)
 
 		for x in range(0, len(image)):
 			for y in range(0, len(image[0])):
+
+
+
+
+
 				# d = (Ax + By + C) / A^2 + B^2
-
 				A = -1 * slope
-				B = 1
+				d = (A * x + y + -1 * C) / (A ** 2 + 1)
 
-           		# original eq: d = (A * x + B * y + -1 * C) / (A * A + B * B)
-				d = (A * x + y + -1 * C) / (A ** 2 + B ** 2)
+				if x == 160 and y == 240:
+					print("here")
 
+				# if d >= 0:
 				# if it's white pixel we swap in a copy of the image.
-				# on_fold_line = False
+				if image[x][y] == 1:
+					reflected_x = round(x - 2 * A * d) - 1
+					reflected_y = round(y - 2 * d) - 1 
 
-				# for coord in fold_line:
-				# 	if x == coord[0] and y == coord[1]:
-				# 		on_fold_line = True
 
-				if (image[x][y] == 1) and not (reflection_line[x] == y): # and not on_fold_line:
-					reflected_x = int(np.floor(x - 2 * A * d))
-					reflected_y = int(np.floor(y - 2 * B * d))
-				
-					if x == 0 and y == 0:
-						print("(0, 0)")
-						print(image[x][y] == 1)
-						print("reflected:", "x =", str(reflected_x) + ",", "y =", str(reflected_y))
-					
-					# if x == 10 and y == 0:
-					# 	print("(10, 0)")
-					# 	print(image[x][y] == 1)
-					# 	print("reflected:", "x =", str(reflected_x) + ",", "y =", str(reflected_y))
 
 					# Only swap pixels if not out of bound
 					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
-						# if reflected_x == len(image):
-						# 	reflected_x -= 1
-						# if reflected_y == len(image[0]):
-						# 	reflected_y -= 1
 						temp = reflected_img[reflected_x][reflected_y]
 						reflected_img[reflected_x][reflected_y] = reflected_img[x][y]
 						reflected_img[x][y] = temp
-					# else: 
-					# 	# if out of bounds, still want to change the pixel to 
-					# 	# black (just don't try to access the reflected px). 
-					# 	# Otherwise you'll get weird strips of white
-					# 	reflected_img[x][y] = 0
+
+
+					else: 
+						# if out of bounds, still want to change the pixel to 
+						# black (just don't try to access the reflected px). 
+						# Otherwise you'll get weird strips of white
+						reflected_img[x][y] = 0
 		return reflected_img
+
+
 
 	@staticmethod
 	def or_operation(image1, image2):
