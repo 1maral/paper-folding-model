@@ -57,10 +57,35 @@ class ImageProcessor:
 			im.show()
 		return
 	
-	# To convert from bmp to bitmap (from Claude)
+	# To convert from png to bitmap (from Claude)
 	@staticmethod
 	def img_bitmap1(img):
 		"""Converts a PNG image to a black & white bitmap and saves it."""
+		try:
+			# Open and convert to grayscale
+			image = Image.open(img).convert('L')
+			ary = np.array(image)
+
+			# Change: 128 to 200 so the light blue px gets converted to white 
+			# in bitmap
+			# Apply threshold (128) to get binary array
+			binary_array = (ary < 200).astype(np.uint8) * 255
+
+			# Create black & white image with explicit 'L' mode
+			bw_image = Image.fromarray(binary_array, mode='L')
+			
+			# Save BMP
+			bw_image.save(img.split('.')[0] + ".bmp")
+
+			return (binary_array // 255).astype(int)
+		except Exception as e:
+			print(f"Error processing image {img}: {e}")
+			return None
+		
+	# To convert from bmp to bitmap (from Claude)
+	@staticmethod
+	def img_bitmap2(img):
+		"""Converts a bmp image to a black & white bitmap and saves it."""
 		try:
 			# Open and convert to grayscale
 			image = Image.open(img).convert('L')
@@ -97,14 +122,14 @@ class ImageProcessor:
 			coord1_x += 1 # arbitrary increment to get the coords on the same col
 
 		# Adjust if coord is near end bound b/c end bound is exclusive 
-		if coord1_x == len(image[0]) - 1:
-			coord1_x += 1
-		if coord2_x == len(image[0]) - 1:
-			coord2_x += 1
-		if coord1_y == len(image) - 1:
-			coord1_y += 1
-		if coord2_y == len(image) - 1:
-			coord2_y += 1
+		# if coord1_x == len(image[0]) - 1:
+		# 	coord1_x += 1
+		# if coord2_x == len(image[0]) - 1:
+		# 	coord2_x += 1
+		# if coord1_y == len(image) - 1:
+		# 	coord1_y += 1
+		# if coord2_y == len(image) - 1:
+		# 	coord2_y += 1
 
 		# Check x-coords to find the max
 		max_x = coord1_x
@@ -211,8 +236,8 @@ class ImageProcessor:
 				# if it's white pixel we swap in a copy of the image.
 				if image[x][y] == 1:
 					# floor added
-					reflected_x = int(np.floor(x - 2 * A * d))
-					reflected_y = int(np.floor(y - 2 * d))
+					reflected_x = round(x - 2 * A * d) # int(np.floor(...))
+					reflected_y = round(y - 2 * d) # int(np.floor(...))
 					# Only swap pixels if not out of bound
 					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
 						temp = reflected_img[reflected_x][reflected_y]

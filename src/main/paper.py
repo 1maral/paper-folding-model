@@ -93,7 +93,7 @@ class Paper:
             for cur in range(0, stack_length):
                 stack_img = stack[cur] # pop from stack
 
-                ImageProcessor.bmp_image(stack_img, "testing/popped" + str(iteration) + " " + str(cur), True)
+                ImageProcessor.bmp_image(stack_img, "testing/popped" + str(iteration) + " " + str(cur), False)
 
                 # Figure 3: intersection of fliped input image and stack image
                 flip = 1 - input_img # flip the input bitmap
@@ -101,7 +101,7 @@ class Paper:
 
                 # flap = np.copy(intersect) # intersect.copy()
                 ImageProcessor.bmp_image(flip, "testing/flip-fig-3" + str(iteration) + str(cur), False)
-                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect" + str(iteration) + str(cur), True)
+                ImageProcessor.bmp_image(intersect, "testing/flap-fig-3-intersect" + str(iteration) + str(cur), False)
 
                 # Figure 4: replace image in stack with the intersection of input image and stack image
                 stack[cur] = np.logical_and(stack_img, input_img).astype(int)
@@ -129,7 +129,7 @@ class Paper:
                 # Appending the reflected flap
                 stack.append(folded_flap)
 
-                # ImageProcessor.bmp_image(flap, "testing/intersect-copy", True)
+                # ImageProcessor.bmp_image(flap, "testing/intersect-copy", False)
                 ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy" + str(iteration) + str(cur), False)
                 iteration += 1
 
@@ -155,7 +155,7 @@ class Paper:
         #     im.save("src/image/base-layer.bmp")
         #     im.show()
 
-        # print(len(self.img_stack))
+        print(len(self.img_stack))
 
         # Base case: Stop unfolding when only one layer remains.
         if len(self.img_stack) == 1:

@@ -26,8 +26,9 @@ class Model:
     # Functions:
     def initialize(self):
         blank_img = 'src/image/start.jpg'
+        # blank_img = 'src/image/small-testing/start.png'
         # Process the unfolded paper(blank) to bitmap representation
-        blank_bitmap = self.img_processor.img_bitmap(blank_img)
+        blank_bitmap = self.img_processor.img_bitmap1(blank_img)
         # Add the initial image to Image Stack
         self.img_stack.append(blank_bitmap)
 
@@ -68,8 +69,18 @@ if __name__ == "__main__":
     solutions_img = ['src/image/sol1.jpg', 'src/image/sol2.jpg', 'src/image/sol3.jpg', 'src/image/sol4.jpg', 'src/image/sol5.jpg']
 
     #------------------------------------------------------------------------------
-    input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/2in5.png']
-    
+    # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/2in5.png']
+    # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/3in5.png']
+    #------------------------------------------------------------------------------
+    # Ignore this input:
+    # input_arr = ['src/image/small-testing/small-test1.png', 'src/image/small-testing/small-test2.png', 'src/image/small-testing/small-test3.png', 'src/image/small-testing/small-test4.png', 'src/image/small-testing/small-test5.png']
+    #------------------------------------------------------------------------------
+    # Custom Inputs:
+    input_arr = ['src/image/lemon-in1.png', 'src/image/lemon-in2.png', 'src/image/lemon-in3.png', 'src/image/lemon-in4.png']
+    # input_arr = ['src/image/two-hearts-in1.png', 'src/image/two-hearts-in2.png', 'src/image/two-hearts-in3.png', 'src/image/two-hearts-in4.png']
+    # input_arr = ['src/image/Group-2-in1.png', 'src/image/Group-2-in2.png', 'src/image/Group-2-in3.png', 'src/image/Group-2-in4.png']
+
+
     model = Model()
     # 1D array of processed bitmap images in Image type for each state
     input_bitmap = model.img_processor.img_process(input_arr)
@@ -123,6 +134,15 @@ if __name__ == "__main__":
     # bitmap1 = ImageProcessor.img_bitmap1("src/image/2in1.bmp")
     # bitmap1 = ImageProcessor.img_bitmap("src/image/2in1.jpg")
 
+
+    
+    # bitmap1 = ImageProcessor.img_bitmap1("src/image/testing/flap-fig-3-intersect2.bmp")
+    
+    
+
+    # bitmap1 = ImageProcessor.img_bitmap1("src/image/w2.bmp")
+
+
     # reflected = np.dot((bitmap1 > 0).astype(float),255)
     # im = Image.fromarray(reflected.astype(np.uint8))
     # im.save("src/image/testing/flap-fig-3.jpg")
@@ -139,6 +159,14 @@ if __name__ == "__main__":
     # reflected = ImageProcessor.reflect(bitmap1, [(320, 160), (160, 320)])
     # reflected = ImageProcessor.reflect(bitmap1, [(0, 0), (320, 320)])
     # reflected = ImageProcessor.reflect(bitmap1, [(320, 0), (0, 320)])
+
+
+
+    # reflected = ImageProcessor.reflect(bitmap1, [(160, 160), (319, 80)]) # x, y-coords for flip line may be flipped?
+
+
+
+    # print(reflected)
 
     # reflected = np.dot((reflected > 0).astype(float),255)
     # im = Image.fromarray(reflected.astype(np.uint8))
