@@ -66,6 +66,11 @@ if __name__ == "__main__":
     # Diameter of punch: 27 px, Radius: 13.5 px
     # Size of paper: 320 x 320 px
     solutions_img = ['src/image/sol1.jpg', 'src/image/sol2.jpg', 'src/image/sol3.jpg', 'src/image/sol4.jpg', 'src/image/sol5.jpg']
+
+    #------------------------------------------------------------------------------
+    # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/2in5.png']
+    # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/3in5.png']
+    input_arr = ['src/image/8in1.png', 'src/image/8in2.png', 'src/image/8in3.png']
     #------------------------------------------------------------------------------
     # Ignore this input:
     # input_arr = ['src/image/small-testing/small-test1.png', 'src/image/small-testing/small-test2.png', 'src/image/small-testing/small-test3.png', 'src/image/small-testing/small-test4.png', 'src/image/small-testing/small-test5.png']
@@ -90,6 +95,10 @@ if __name__ == "__main__":
     # input_arr = ['src/image/circle-in1.png', 'src/image/circle-in2.png', 'src/image/circle-in3.png', 'src/image/circle-in4.png', 'src/image/circle-in5.png'] # half working?
     # input_arr = ['src/image/corner-in1.png', 'src/image/corner-in2.png', 'src/image/corner-in3.png', 'src/image/corner-in4.png', 'src/image/corner-in5.png'] # not working
     # input_arr = ['src/image/corner-in1.png', 'src/image/corner-in2.png', 'src/image/corner-in3-diff.png', 'src/image/corner-in4-diff.png', 'src/image/corner-in5-diff.png'] # not working
+    # Custom Inputs:
+    # input_arr = ['src/image/lemon-in1.png', 'src/image/lemon-in2.png', 'src/image/lemon-in3.png', 'src/image/lemon-in4.png']
+    # input_arr = ['src/image/two-hearts-in1.png', 'src/image/two-hearts-in2.png', 'src/image/two-hearts-in3.png', 'src/image/two-hearts-in4.png']
+    # input_arr = ['src/image/Group-2-in1.png', 'src/image/Group-2-in2.png', 'src/image/Group-2-in3.png', 'src/image/Group-2-in4.png']
 
 
     model = Model()
