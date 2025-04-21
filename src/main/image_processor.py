@@ -109,6 +109,7 @@ class ImageProcessor:
 	# Note (delete later): Used in the `fold` and `unfold` methods.
 	def reflect(image, fold_line):
 
+		# x-axis (= cols) is left to right. y-axis (= rows) is top to bottom.
 		coord1_x = fold_line[0][0]
 		coord1_y = fold_line[0][1]
 		coord2_x = fold_line[1][0]
@@ -121,100 +122,58 @@ class ImageProcessor:
 		if coord2_x - coord1_x == 1: # vertical fold line
 			coord1_x += 1 # arbitrary increment to get the coords on the same col
 
-		# Adjust if coord is near end bound b/c end bound is exclusive 
-		# if coord1_x == len(image[0]) - 1:
-		# 	coord1_x += 1
-		# if coord2_x == len(image[0]) - 1:
-		# 	coord2_x += 1
-		# if coord1_y == len(image) - 1:
-		# 	coord1_y += 1
-		# if coord2_y == len(image) - 1:
-		# 	coord2_y += 1
+		# Creating a copy of the image to be reflected
+		reflected_img = np.copy(image)
 
-		# Check x-coords to find the max
-		max_x = coord1_x
-		min_x = coord2_x
-		if coord2_x > coord1_x:
-			max_x = coord2_x
-			min_x = coord1_x
-
-		# # # Check if fold line is horizontal or vertical
-		# # # Note: x of 2D array refers to "y-axis" and coord of 2D array refers to "x-axis" 
-		# # # but it's flipped (or normal) for the fold line coords...
-
-		# # # MAYBE SHOULD SWITCH X AND Y FOR CLARITY B/C X ACTUALLY REPRESENTS THE Y-COORD AND Y 
-		# # # ACTUALLY THE X-COORD ON A XY-PLANE B/C I GOT SO CONFUSED
+		# Determine type of fold.
 
 		# Horizontal fold: (vertical reflection)
 		if (coord2_y - coord1_y) == 0:
-			# Determine which half above or below fold line is bigger.
-			img_height = len(image)
-			if img_height - coord1_y > coord1_y - 0:
-				begin = coord1_y
-				end = img_height
-			else: 
-				begin = 0
-				end = coord1_y
+			for y in range(len(image)):
+				for x in range(len(image[0])):
+					if image[y][x] == 1:
+						if y < coord1_y: # px is above fold line
+							reflected_y = (coord1_y - y) + coord1_y
+						else: # px is below fold line
+							reflected_y = coord1_y - (y - coord1_y) 
+						reflected_x = x
 
-			for x in range(begin, end): # the bigger half (up or down)
-				row = image[x]
-				for y in range(len(row)):
-					if x < coord1_y: # px is above fold line
-						reflected_x = (coord1_y - x) + coord1_y
-					else: # px is below fold line
-						reflected_x = coord1_y - (x - coord1_y) 
-					reflected_y = y
+						# Only swap pixels if not out of bound
+						if 0 <= reflected_x < len(image[0]) and 0 <= reflected_y < len(image):
+							temp = reflected_img[reflected_y][reflected_x]
+							reflected_img[reflected_y][reflected_x] = reflected_img[y][x]
+							reflected_img[y][x] = temp
+						else: 
+							# If out of bounds, still want to change the pixel to 
+							# black (just don't try to access the reflected px). 
+							# Otherwise you'll get weird strips of white.
+							reflected_img[y][x] = 0
 
-					# Only swap pixels if not out of bound
-					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
-						temp = image[reflected_x][reflected_y]
-						image[reflected_x][reflected_y] = image[x][y]
-						image[x][y] = temp
-					else: 
-						# if out of bounds, still want to change the pixel to 
-						# black (just don't try to access the reflected px). 
-						# Otherwise you'll get weird strips of white
-						image[x][y] = 0
-
-			return image
+			return reflected_img
 
 		# Vertical fold: (horizontal reflection)
 		if (coord2_x - coord1_x) == 0:
-			# Determine which half left or right of the fold line is bigger.
-			img_width = len(image[0])
-			if img_width - coord1_x > coord1_x - 0:
-				begin = coord1_x
-				end = img_width
-			else: 
-				begin = 0
-				end = coord1_x
+			for y in range(len(image)): 
+				for x in range(len(image[0])): 
+					if image[y][x] == 1:
+						if x < coord1_x: # px is left of fold line
+							reflected_x = (coord1_x - x) + coord1_x
+						else: # px is right of fold line
+							reflected_x = coord1_x - (x - coord1_x) 
+						reflected_y = y
 
-			for x in range(len(image)): # the height of the img
-				for y in range(begin, end): # the bigger half (left or right)
-					if y < coord1_x:
-						reflected_y = (coord1_x - y) + coord1_x
-					else: 
-						reflected_y = coord1_x - (y - coord1_x) 
-					reflected_x = x
-
-					# Only swap pixels if not out of bound
-					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
-						temp = image[reflected_x][reflected_y]
-						image[reflected_x][reflected_y] = image[x][y]
-						image[x][y] = temp
-					else: 
-						# if out of bounds, still want to change the pixel to 
-						# black (just don't try to access the reflected px). 
-						# Otherwise you'll get weird strips of white
-						image[x][y] = 0
-			return image
+						# Only swap pixels if not out of bound
+						if 0 <= reflected_x < len(image[0]) and 0 <= reflected_y < len(image):
+							temp = reflected_img[reflected_y][reflected_x]
+							reflected_img[reflected_y][reflected_x] = reflected_img[y][x]
+							reflected_img[y][x] = temp
+						else: 
+							reflected_img[y][x] = 0
+			return reflected_img
 
 		# Calculating fold line 
 		slope = (float)(coord2_y - coord1_y) / (coord2_x - coord1_x)
 		C = coord1_y - slope * coord1_x
-
-		# Creating a copy of the image to be reflected
-		reflected_img = np.copy(image)
 
 		# reflection_line = []
 		# Find pixels on reflection line
@@ -223,31 +182,25 @@ class ImageProcessor:
 
 		# print(reflection_line)
 
-		for x in range(0, len(image)):
-			for y in range(0, len(image[0])):
+		for y in range(0, len(image)):
+			for x in range(0, len(image[0])):
 				# d = (Ax + By + C) / A^2 + B^2
 				A = -1 * slope
-				d = (A * x + y + -1 * C) / (A ** 2 + 1)
-
-				if x == 160 and y == 240:
-					print("here")
+				d = (A * y + x + -1 * C) / (A ** 2 + 1)
 
 				# if d >= 0:
-				# if it's white pixel we swap in a copy of the image.
-				if image[x][y] == 1:
+				# If it's white pixel we swap in a copy of the image.
+				if image[y][x] == 1:
 					# floor added
-					reflected_x = round(x - 2 * A * d) # int(np.floor(...))
-					reflected_y = round(y - 2 * d) # int(np.floor(...))
+					reflected_y = round(y - 2 * A * d) # int(np.floor(...))
+					reflected_x = round(x - 2 * d) # int(np.floor(...))
 					# Only swap pixels if not out of bound
-					if 0 <= reflected_x < len(image) and 0 <= reflected_y < len(image[0]):
-						temp = reflected_img[reflected_x][reflected_y]
-						reflected_img[reflected_x][reflected_y] = reflected_img[x][y]
-						reflected_img[x][y] = temp
+					if 0 <= reflected_x < len(image[0]) and 0 <= reflected_y < len(image):
+						temp = reflected_img[reflected_y][reflected_x]
+						reflected_img[reflected_y][reflected_x] = reflected_img[y][x]
+						reflected_img[y][x] = temp
 					else: 
-						# if out of bounds, still want to change the pixel to 
-						# black (just don't try to access the reflected px). 
-						# Otherwise you'll get weird strips of white
-						reflected_img[x][y] = 0
+						reflected_img[y][x] = 0
 		return reflected_img
 
 	@staticmethod

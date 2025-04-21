@@ -39,7 +39,8 @@ class Paper:
         topRow = rows - 1
         bottomRow = 0
 
-        # This is to find the smallest topRow and Biggest bottomRow
+        # This is to find the smallest topRow and Biggest bottomRow (find the 
+        # highest and lowest rows of the fold line)
         for row in range(rows):
             for col in range(cols):
                 if flip_line[row, col]:
@@ -50,6 +51,7 @@ class Paper:
 
         # lstTop = [col1, col2, col3...]
         # lstBottom = [col1, col2, col3...]
+        # Find all white pixels in highest and lowest rows of the fold line.
         lstTop = []
         lstBottom = []
         for col in range(cols):
@@ -67,18 +69,18 @@ class Paper:
         #          ...                       :
         #                                    :
         if lstBottom[0] >= lstTop[0]:
-            # finalCoordinates = [[topRow, lstTop[0]], [bottomRow, lstBottom[-1]]]
-            # switching the coords around b/c the coords for the fold line and the 2d array are weird
-            finalCoordinates = [[lstTop[0], topRow], [lstBottom[-1], bottomRow]]
+            # Outputs leftmost pixel of topRow (lefmost pixel of the fold line) and rightmost pixel 
+            # of the bottomRow (rightmost pixel of the fold line)
+            finalCoordinates = [[lstTop[0], topRow], [lstBottom[-1], bottomRow]] # (x1, y1), (x2, y2) where x-axis is left to right and y-axis is top to bottom
         # Case 2: 
         #          ...
         #       ...
         #    ...
         # ...
         elif lstBottom[0] < lstTop[0]:
-            # finalCoordinates = [[topRow, lstTop[-1]], [bottomRow, lstBottom[0]]]
-            # switching the coords around b/c the coords for the fold line and the 2d array are weird
-            finalCoordinates = [[lstTop[-1], topRow], [lstBottom[0], bottomRow]]
+            # Outputs rightmost pixel of topRow (righmost pixel of the fold line) and leftmost pixel 
+            # of the bottomRow (leftmost pixel of the fold line)
+            finalCoordinates = [[lstTop[-1], topRow], [lstBottom[0], bottomRow]] # (x1, y1), (x2, y2) where x-axis is left to right and y-axis is top to bottom
         return finalCoordinates
 
     def fold(self, inputs):
@@ -86,8 +88,7 @@ class Paper:
         stack = self.img_stack
 
         iteration = 1
-        # Note: You can comment on the im.show() parts while in debugger mode
-        # to see the images while debugging.
+
         for input_img in inputs[:-1]: # all but the punch img
             stack_length = len(stack)
             for cur in range(0, stack_length):
@@ -131,8 +132,7 @@ class Paper:
 
                 # ImageProcessor.bmp_image(flap, "testing/intersect-copy", False)
                 ImageProcessor.bmp_image(folded_flap, "testing/intersect-copy" + str(iteration) + str(cur), False)
-                iteration += 1
-
+                
                 iteration += 1
 
         return
