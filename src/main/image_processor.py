@@ -168,7 +168,7 @@ class ImageProcessor:
 							reflected_img[reflected_y][reflected_x] = reflected_img[y][x]
 							reflected_img[y][x] = temp
 						else: 
-							reflected_img[y][x] = 0
+							reflected_img[y][x] = 1
 			return reflected_img
 
 		# Calculating fold line 

@@ -71,12 +71,13 @@ if __name__ == "__main__":
     #------------------------------------------------------------------------------
     # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/2in5.png']
     # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/3in5.png']
+    input_arr = ['src/image/8in1.png', 'src/image/8in2.png', 'src/image/8in3.png']
     #------------------------------------------------------------------------------
     # Ignore this input:
     # input_arr = ['src/image/small-testing/small-test1.png', 'src/image/small-testing/small-test2.png', 'src/image/small-testing/small-test3.png', 'src/image/small-testing/small-test4.png', 'src/image/small-testing/small-test5.png']
     #------------------------------------------------------------------------------
     # Custom Inputs:
-    input_arr = ['src/image/lemon-in1.png', 'src/image/lemon-in2.png', 'src/image/lemon-in3.png', 'src/image/lemon-in4.png']
+    # input_arr = ['src/image/lemon-in1.png', 'src/image/lemon-in2.png', 'src/image/lemon-in3.png', 'src/image/lemon-in4.png']
     # input_arr = ['src/image/two-hearts-in1.png', 'src/image/two-hearts-in2.png', 'src/image/two-hearts-in3.png', 'src/image/two-hearts-in4.png']
     # input_arr = ['src/image/Group-2-in1.png', 'src/image/Group-2-in2.png', 'src/image/Group-2-in3.png', 'src/image/Group-2-in4.png']
 
