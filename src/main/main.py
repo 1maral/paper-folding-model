@@ -65,20 +65,31 @@ if __name__ == "__main__":
     # Input: sequence of images that represent the state of the folded paper in each time-slice.
     # Diameter of punch: 27 px, Radius: 13.5 px
     # Size of paper: 320 x 320 px
-    # input_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg']
     solutions_img = ['src/image/sol1.jpg', 'src/image/sol2.jpg', 'src/image/sol3.jpg', 'src/image/sol4.jpg', 'src/image/sol5.jpg']
-
-    #------------------------------------------------------------------------------
-    # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/2in5.png']
-    # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/3in5.png']
     #------------------------------------------------------------------------------
     # Ignore this input:
     # input_arr = ['src/image/small-testing/small-test1.png', 'src/image/small-testing/small-test2.png', 'src/image/small-testing/small-test3.png', 'src/image/small-testing/small-test4.png', 'src/image/small-testing/small-test5.png']
     #------------------------------------------------------------------------------
-    # Custom Inputs:
-    input_arr = ['src/image/lemon-in1.png', 'src/image/lemon-in2.png', 'src/image/lemon-in3.png', 'src/image/lemon-in4.png']
-    # input_arr = ['src/image/two-hearts-in1.png', 'src/image/two-hearts-in2.png', 'src/image/two-hearts-in3.png', 'src/image/two-hearts-in4.png']
-    # input_arr = ['src/image/Group-2-in1.png', 'src/image/Group-2-in2.png', 'src/image/Group-2-in3.png', 'src/image/Group-2-in4.png']
+
+    # Inputs:
+    # input_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg'] # works
+    # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/2in5.png'] # half working?
+    input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/3in5.png'] # half working?
+    # input_arr = ['src/image/4in1.jpg', 'src/image/4in2.jpg'] # works
+    # input_arr = ['src/image/5in1.png', 'src/image/5in2.png', 'src/image/5in3.png'] # not working
+    # input_arr = ['src/image/6in1.png', 'src/image/6in2.png'] # not working
+    # input_arr = ['src/image/7in1.png', 'src/image/7in2.png', 'src/image/7in3.png'] # works
+    # input_arr = ['src/image/8in1.png', 'src/image/8in2.png', 'src/image/8in3.png'] # works
+
+    # input_arr = ['src/image/lemon-in1.png', 'src/image/lemon-in2.png', 'src/image/lemon-in3.png', 'src/image/lemon-in4.png'] # works
+    # input_arr = ['src/image/two-hearts-in1.png', 'src/image/two-hearts-in2.png', 'src/image/two-hearts-in3.png', 'src/image/two-hearts-in4.png'] # half working?
+    # input_arr = ['src/image/Group-2-in1.png', 'src/image/Group-2-in2.png', 'src/image/Group-2-in3.png', 'src/image/Group-2-in4.png'] # half working?
+    # input_arr = ['src/image/clover-in1.png', 'src/image/clover-in2.png', 'src/image/clover-in3.png', 'src/image/clover-in4.png'] # half working?
+    # input_arr = ['src/image/hourglass-in1.png', 'src/image/hourglass-in2.png', 'src/image/hourglass-in3.png', 'src/image/hourglass-in4.png', 'src/image/hourglass-in5.png', 'src/image/hourglass-in6.png', 'src/image/hourglass-in7.png'] # not working
+    # input_arr = ['src/image/4-leaf-clover-in1.png', 'src/image/4-leaf-clover-in2.png', 'src/image/4-leaf-clover-in3.png', 'src/image/4-leaf-clover-in4.png', 'src/image/4-leaf-clover-in5.png'] # not working
+    # input_arr = ['src/image/circle-in1.png', 'src/image/circle-in2.png', 'src/image/circle-in3.png', 'src/image/circle-in4.png', 'src/image/circle-in5.png'] # half working?
+    # input_arr = ['src/image/corner-in1.png', 'src/image/corner-in2.png', 'src/image/corner-in3.png', 'src/image/corner-in4.png', 'src/image/corner-in5.png'] # not working
+    # input_arr = ['src/image/corner-in1.png', 'src/image/corner-in2.png', 'src/image/corner-in3-diff.png', 'src/image/corner-in4-diff.png', 'src/image/corner-in5-diff.png'] # not working
 
 
     model = Model()
@@ -124,8 +135,8 @@ if __name__ == "__main__":
     # # =============================================================================
 
     # Choose the solution that resembles the unfolded paper the most.
-    prediction = model.pick_solution(unfolded_paper, solutions_bitmap)
-    print("Solution", prediction, "is the answer.")
+    # prediction = model.pick_solution(unfolded_paper, solutions_bitmap)
+    # print("Solution", prediction, "is the answer.")
 
     # =============================================================================
     # Testing for reflect
@@ -136,7 +147,7 @@ if __name__ == "__main__":
 
 
     
-    # bitmap1 = ImageProcessor.img_bitmap1("src/image/testing/flap-fig-3-intersect2.bmp")
+    # bitmap1 = ImageProcessor.img_bitmap1("src/image/testing/flap-fig-3-intersect-testing.bmp")
     
     
 
