@@ -64,11 +64,11 @@ if __name__ == "__main__":
     # Input: sequence of images that represent the state of the folded paper in each time-slice.
     # Diameter of punch: 27 px, Radius: 13.5 px
     # Size of paper: 320 x 320 px
-    # input_arr = ['src/image/in1.jpg', 'src/image/in2.jpg', 'src/image/in3.jpg']
+    input_arr = ['src/image/en01.png', 'src/image/en02.png', 'src/image/en03.png']
     solutions_img = ['src/image/sol1.jpg', 'src/image/sol2.jpg', 'src/image/sol3.jpg', 'src/image/sol4.jpg', 'src/image/sol5.jpg']
 
     #------------------------------------------------------------------------------
-    input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/2in5.png']
+    # input_arr = ['src/image/2in1.png', 'src/image/2in2.png', 'src/image/2in3.png', 'src/image/2in4.png', 'src/image/2in5.png']
     
     model = Model()
     # 1D array of processed bitmap images in Image type for each state
